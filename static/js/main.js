@@ -215,6 +215,12 @@ $(function() {
           }));
         });
       }
+
+      if ($target.children().length === 0) {
+        $target.html('<div class="alert">' + 
+          '<strong>Empty Set</strong>. We are not able to find any matches.' +
+          '</div>');
+      }
     },
 
     select_menu: function(ev) {
