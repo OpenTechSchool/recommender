@@ -3,26 +3,40 @@ $(function() {
 
   // Util
   var TmplView = Backbone.View.extend({
-    make_context: function() {
-      if (!this.model) {
-        return {};
-      }
-      return this.model.attributes;
+
+    extend_context: function() {
+      return {};
     },
     render:function () {
-        $(this.el).html(this.template(this.make_context()));
-        return this;
+      var context = _.extend({},
+            this.model ? this.model.toJSON() : {},
+            this.extend_context());
+
+      $(this.el).html(this.template(context));
+      return this;
     }
   });
 
   // Models
 
   var Profile = Backbone.Model.extend({});
+  var Book = Backbone.Model.extend({});
+  var Recommendation = Backbone.Model.extend({});
 
   // Model Collections
   var Profiles = Backbone.Collection.extend({
     model: Profile,
     url: "data/profiles.json"
+  });
+
+  var Books = Backbone.Collection.extend({
+    model: Book,
+    url: "data/books.json"
+  });
+
+  var Recommendations = Backbone.Collection.extend({
+    model: Recommendation,
+    url: "data/recommendations.json"
   });
 
 
@@ -32,11 +46,38 @@ $(function() {
   });
 
   var BooksView = TmplView.extend({
-     template: _.template($('#tmpl-books').html())
+    template: _.template($('#tmpl-books').html()),
+
+    extend_context: function() {
+      var app = this.options.app;
+      console.log(this);
+      return {"recommendations": app.recommendations.where({
+          "type": "book",
+          "item_id": this.model.id
+        }).map(function(item){
+          console.log(item);
+          return {"text": item.says, "user": app.profiles.get(item.by).toJSON()};
+          })
+      };
+    }
   });
 
   var BooksByView = TmplView.extend({
-     template: _.template($('#tmpl-books-by').html())
+     template: _.template($('#tmpl-books-by').html()),
+
+    extend_context: function() {
+      var app = this.options.app;
+      return {"recommendations": app.recommendations.where({
+          "type": "book",
+          "by": this.model.id
+        }).map(function(item){
+          console.log(item.get("item_id"));
+          console.log(app.books.get(item.get("item_id")));
+          return {"text": item.get("says"),
+                  "book": app.books.get(item.get("item_id")).toJSON()};
+          })
+      };
+    }
   });
 
   var BookView = TmplView.extend({
@@ -67,7 +108,12 @@ $(function() {
 
     initialize: function() {
       this.profiles = new Profiles();
+      this.books = new Books();
+      this.recommendations = new Recommendations();
+
       this.profiles.fetch();
+      this.books.fetch();
+      this.recommendations.fetch();
 
       this.main = $('#main');
       this.mainNavView = new MainNavView({el: $('#main-nav')});
@@ -77,7 +123,7 @@ $(function() {
     books: function () {
         // Since the home view never changes, we instantiate it and render it only once
         if (!this.booksView) {
-            this.booksView = new BooksView();
+            this.booksView = new BooksView({app: this});
             this.booksView.render();
         } else {
             this.booksView.delegateEvents(); // delegate events when the view is recycled
@@ -90,7 +136,7 @@ $(function() {
     books_by: function (user) {
         // Since the home view never changes, we instantiate it and render it only once
         if (!this.booksByView) {
-            this.booksByView = new BooksByView();
+            this.booksByView = new BooksByView({app: this});
         } else {
             this.booksByView.delegateEvents(); // delegate events when the view is recycled
         }
@@ -103,7 +149,7 @@ $(function() {
     book: function (book) {
         // Since the home view never changes, we instantiate it and render it only once
         if (!this.bookView) {
-            this.bookView = new BookView();
+            this.bookView = new BookView({app: this});
             this.bookView.render();
         } else {
             this.bookView.delegateEvents(); // delegate events when the view is recycled
@@ -115,7 +161,7 @@ $(function() {
     home: function () {
         // Since the home view never changes, we instantiate it and render it only once
         if (!this.homeView) {
-            this.homeView = new HomeView();
+            this.homeView = new HomeView({app: this});
             this.homeView.render();
         } else {
             this.homeView.delegateEvents(); // delegate events when the view is recycled

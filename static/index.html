@@ -233,88 +233,32 @@
 
             <h3>And I recommend</h3>
 
-            <!-- Example row of columns -->
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="http://37signals.com/images/front-cover.png">
+            <% _.each(recommendations, function(rcd) { %>
+                <div class="row">
+                    <div class="span2 offset1">
+                        <img src="<%= rcd.book.picture_url %>">
+                    </div>
+                    <div class="span8">
+                        <h2><%= rcd.book.title %></h2>
+                        <p><small><%= rcd.book.author %>, <%= rcd.book.published_date %></small></p>
+                        <blockquote>
+                            <p><%= rcd.text %> <a href="#books/<%= rcd.book.id %>">read more recommendations</a></p>
+                        </blockquote>
+                        <p style="text-align: right">
+                            <small>
+                                <% _.each(rcd.book.tags, function(tag) { %>
+                                    <span class="badge"><%= tag %></span>
+                                <% }); %>
+                                <% if (rcd.book.level) { %>
+                                    <span class="badge badge-important"><%= rcd.book.level %></span>
+                                <% } %>
+                            </small>
+                        </p>
+                    </div>
                 </div>
-                <div class="span8">
-                    <h2>Rework</h2>
-                    <p><small>Jason Fried &amp; David Heinemeier Hansson, 2010</small></p>
-                    <blockquote>
-                        <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="/rework.html">read more recommendations</a></p>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <span class="badge">Startup</span> <span class="badge">Culture</span> <span class="badge badge-important">Beginners</span>
-                        </small>
-                    </p>
-                </div>
-            </div>
 
-            <br />
-
-            <div class="row">
-                <div class="span2 offset1" >
-                    <img src="http://bks9.books.google.de/books?id=--K-DvEj7yAC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE70-x_lnPSGTDC7rHMwxz-iA7uMUiEcni7UZdHuev9A25UZXc2gLRgN0a2HAphK8XXYCi5i0kJo-6JdOxhfXx_sdQOLfT_ZoBxmb9UQx-8W5vgoU_iNhaU6mReLs5-13neEtL4FM" >
-                </div>
-                <div class="span8">
-                    <h2>Just for fun</h2>
-                    <p><small>Linus Torvalds, David Diamond, 2002</small></p>
-                    <blockquote>
-                        <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="#">read more recommendations</a></p>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <span class="badge">Culture</span> <span class="badge">Hacking</span>  <span class="badge">OpenSource</span> <span class="badge">Retrospection</span>
-                        </small>
-                    </p>
-                </div>
-            </div>
-
-            <br />
-
-
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="http://bks7.books.google.de/books?id=toGKQAAACAAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE731VPXtw7B9J5aw-nwsu79lmPLZ_EM1bSabyWdvkyG2b8mYSCQY7Id0JiwP9coMRl2affGLStTbB4IEVXUnUo7juEe42TylYysG7TbiruwI208Wxedbl762Ip39SrxeVMAK24gf">
-                </div>
-                <div class="span8">
-                    <h2>Programming Erlang</h2>
-                    <p><small>Joe Armstrong, 2007</small></p>
-                    <blockquote>
-                        <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="#">read more recommendations</a></p>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <span class="badge">Erlang</span> <span class="badge">Programming</span> <span class="badge">Compendium</span> <span class="badge badge-important">Advanced</span>
-                        </small>
-                    </p>
-                </div>
-            </div>
-
-
-            <br />
-
-
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="http://ecx.images-amazon.com/images/I/511j6cza5bL._AA160_.jpg">
-                    <p><small><a href="http://books.google.de/books?id=PXa2bby0oQ0C&printsec=frontcover#v=onepage&q&f=false">Read online (free)</a></small></p>
-                </div>
-                <div class="span8">
-                    <h2>Javascript: The Good Parts</h2>
-
-                    <p><small>Douglas Crockford, 2008</p>
-                    <blockquote>
-                        <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="#">read more recommendations</a></p>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <span class="badge">Javascript</span> <span class="badge">Programming</span> <span class="badge">Compendium</span> <span class="badge badge-important">Intermediate</span>
-                        </small>
-                    </p>
-                </div>
+                <br />
+                <% }); %>
             </div>
         </script>
 
