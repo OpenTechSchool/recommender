@@ -1,4 +1,10 @@
 [
+  {
+    "by": "keimlink",
+    "type": "book",
+    "item_id": "learning-python",
+    "says": "Learn about Python's major built-in object types, such as numbers, lists, and dictionaries. Create and process objects using Python statements, and learn Python's general syntax model. Structure and reuse code using functions."
+  },
 	{
 		"by": "ben",
 		"type": "book",
@@ -9,14 +15,14 @@
   {
     "by": "ben",
     "type": "book",
-    "item_id": "just_for_fun",
-    "says": "Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully"
+    "item_id": "just-for-fun",
+    "says": "In this rather short but very fun book Linus Torvalds shares the story on the Linux kernel came to live and what the whole coding and open source thing is all about."
   },
 
   {
     "by": "bea",
     "type": "book",
-    "item_id": "just_for_fun",
+    "item_id": "just-for-fun",
     "says": "Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully"
   }
 ]
