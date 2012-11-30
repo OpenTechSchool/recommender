@@ -1,0 +1,22 @@
+[
+	{
+		"by": "ben",
+		"type": "book",
+		"item_id": "rework",
+		"says": "Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully"
+	},
+
+  {
+    "by": "ben",
+    "type": "book",
+    "item_id": "just_for_fun",
+    "says": "Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully"
+  },
+
+  {
+    "by": "bea",
+    "type": "book",
+    "item_id": "just_for_fun",
+    "says": "Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully"
+  }
+]
