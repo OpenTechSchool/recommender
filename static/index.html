@@ -17,13 +17,41 @@
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body>
+
+        <script type="text/template" id="tmpl-main">
+            <div class="hero-unit">
+                <h1>Welcome!</h1>
+                <p>To recommendly - the <a href="http://www.opentechschool.rg">OpenTechSchool</a> curated lists of learner materials.</p>
+                <p>This is stuff we think (as individuals) that can help you learn tech things and understand hacking-, sharing- and open source culture better.</p>
+                <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+            </div>
+
+            <div class="row">
+                <div class="span4">
+                    <h2>Books</h2>
+                    <p>There are plenty of programming and hacking books out there. Not all are good and it sometimes gets overwhelming. Here you can find those books that helped us learn and we recommend reading.</p>
+                    <p><a class="btn" href="/books.html">Recommended Books &raquo;</a></p>
+                </div>
+                <div class="span4">
+                    <h2>Videos</h2>
+                    <p>Plenty of talks on tech topic help us learn every. And while there are a bunch which surface up through to us via social media and our channels not all are known to every. So we want to recommend some.</p>
+                    <p><a class="btn" href="/videos.html">Recommended Videos &raquo;</a></p>
+                </div>
+                <div class="span4">
+                    <h2>Online Courses</h2>
+                    <p>More and more online courses poping up it becomes hard to choose. Those are the online courses that helped us and we`d recommend</p>
+                    <p><a class="btn" href="/courses.html">Recommended Courses &raquo;</a></p>
+               </div>
+            </div>
+        </script>
+
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
         <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
 
-        <div class="navbar">
+        <div id="navbar" class="navbar">
             <div class="navbar-inner">
                 <div class="container">
 
@@ -43,32 +71,9 @@
 
         <div class="container">
 
-            <!-- Main hero unit for a primary marketing message or call to action -->
-            <div class="hero-unit">
-                <h1>Welcome!</h1>
-                <p>To recommendly - the <a href="http://www.opentechschool.rg">OpenTechSchool</a> curated lists of learner materials.</p>
-                <p>This is stuff we think (as individuals) that can help you learn tech things and understand hacking-, sharing- and open source culture better.</p>
-                <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+            <div id="main">
             </div>
 
-            <!-- Example row of columns -->
-            <div class="row">
-                <div class="span4">
-                    <h2>Books</h2>
-                    <p>There are plenty of programming and hacking books out there. Not all are good and it sometimes gets overwhelming. Here you can find those books that helped us learn and we recommend reading.</p>
-                    <p><a class="btn" href="/books.html">Recommended Books &raquo;</a></p>
-                </div>
-                <div class="span4">
-                    <h2>Videos</h2>
-                    <p>Plenty of talks on tech topic help us learn every. And while there are a bunch which surface up through to us via social media and our channels not all are known to every. So we want to recommend some.</p>
-                    <p><a class="btn" href="/videos.html">Recommended Videos &raquo;</a></p>
-                </div>
-                <div class="span4">
-                    <h2>Online Courses</h2>
-                    <p>More and more online courses poping up it becomes hard to choose. Those are the online courses that helped us and we'd recommend</p>
-                    <p><a class="btn" href="/courses.html">Recommended Courses &raquo;</a></p>
-               </div>
-            </div>
 
             <hr>
 
@@ -77,12 +82,12 @@
             </footer>
 
         </div> <!-- /container -->
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>
+        <script src="js/vendor/jquery-1.8.3.min.js"></script>
 
         <script src="js/vendor/bootstrap.min.js"></script>
-
+        <script src="js/vendor/underscore-min.js"></script>
+        <script src="js/vendor/json2.js"></script>
+        <script src="js/vendor/backbone-min.js"></script>
         <script src="js/main.js"></script>
 
         <script>
