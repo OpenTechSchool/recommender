@@ -102,6 +102,7 @@ $(function() {
 
     sub_menu: "mr",
     item_count: 10,
+    query: undefined,
 
     events: {
       "click .nav li a": "select_menu"
@@ -117,9 +118,56 @@ $(function() {
       $el.find(".nav li").removeClass("active");
       $el.find("#sub-menu-" + this.sub_menu).addClass("active");
 
+      var book_listing = app.books.models;
+      if (this.query) {
+        var query = [],
+            level = "",
+            tags = [];
+        _.each(this.query.split("+"), function(item) {
+            if (item.slice(0, 6) === "level:") {
+            var qu = item.slice(6);
+            if (qu && !level) {
+              level = qu;
+            }
+            return;
+          }
+          if (item.slice(0, 4) === "tag:") {
+            var tag = item.slice(4);
+            if (tag) {
+              tags.push(tag);
+            }
+            return;
+          }
+          query.push(item);
+        });
+        
+        if (level) {
+          book_listing = _.filter(book_listing, function(book) {
+            return book.get("level") === level;
+          });
+        }
+
+        if (tags.length) {
+          book_listing = _.filter(book_listing, function(book) {
+            return _.intersection(book.get("tags"), tags).length;
+          });
+        }
+
+        if(query.length) {
+          book_listing = _.filter(book_listing, function(book) {
+            return !_.find(query, function(keyword) {
+              return book.attributes.title.toLowerCase().indexOf(keyword) === -1 &&
+                     book.attributes.desc.toLowerCase().indexOf(keyword) === -1 &&
+                     book.attributes.author.toLowerCase().indexOf(keyword) === -1;
+            });
+          });
+        }
+        
+      }
+
       if (this.sub_menu == "lb") {
         $target.empty();
-        _.each(app.books.first(this.item_count), function(book) {
+        _.each(_.first(book_listing, this.item_count), function(book) {
           var rcm = book.latestRecommendation();
           if (!rcm) {
             // no recommendation found
@@ -133,7 +181,15 @@ $(function() {
         });
       } else if (this.sub_menu === "lr") {
         $target.empty();
-        _.each(app.recommendations.first(this.item_count), function(rcm) {
+        recommendations = app.recommendations.models;
+        if (this.query) {
+          var item_ids = _.pluck(book_listing, "id");
+          recommendations = _.filter(recommendations, function(rcm) {
+            var item_id = rcm.get("item_id");
+            return _.find(item_ids, function(x) { return x === item_id; });
+          });
+        }
+        _.each(_.first(recommendations, this.item_count), function(rcm) {
           $target.append(view.itemTemplate({
             book: rcm.getBook().toJSON(),
             rcd: rcm.toJSON(),
@@ -142,7 +198,7 @@ $(function() {
         });
       } else {
         // this must be most recommended
-        var selected_books = _.first(app.books.sortBy(function(book) {
+        var selected_books = _.first(_.sortBy(book_listing, function(book) {
               return book.getRecommendationCount();
             }), this.item_count);
         $target.empty();
@@ -165,6 +221,12 @@ $(function() {
       this.sub_menu = $(ev.currentTarget).data("menu-item");
       this.update_books();
       return false;
+    },
+
+    set_query: function(query) {
+      if (query === this.query) return;  // do nothing
+      this.query = query;
+      this.update_books();
     },
 
     render: function () {
@@ -197,16 +259,33 @@ $(function() {
 
     extend_context: function() {
       var app = this.options.app;
-      console.log(this);
       return {"recommendations": app.recommendations.where({
           "type": "book",
           "item_id": this.model.id
         }).map(function(item){
-          console.log(item);
           return {"text": item.get("says"),
                  "user": app.profiles.get(item.get("by")).toJSON()};
           })
       };
+    }
+  });
+
+  var SearchFormView = Backbone.View.extend({
+    events: {
+      "submit form": "submit_form"
+    },
+
+    set_query: function(query) {
+      if (query) {
+        query = query.split("+").join(" ");
+      }
+      $(this.el).find("input").val(query);
+    },
+
+    submit_form: function() {
+      var search = $(this.el).find("input").val().split(" ").join("+");
+      this.options.app.navigate("search/books/" + search , {trigger: true});
+      return false;
     }
   });
 
@@ -227,6 +306,7 @@ $(function() {
         // Books
         "books/by/:user": "books_by",
         "books/:book": "book",
+        "search/books/:params": "books",
         "books/": "books"
     },
 
@@ -240,6 +320,7 @@ $(function() {
       this.profiles.app = this.books.app = this.recommendations.app = this;
 
       this.main = $('#main');
+      this.search = new SearchFormView({el: $('#search-form'), app:this});
       this.mainNavView = new MainNavView({el: $('#main-nav')});
 
       this.progress = 10;
@@ -264,18 +345,19 @@ $(function() {
           });
     },
 
-    books: function () {
-        // Since the home view never changes, we instantiate it and render it only once
-        if (!this.booksView) {
-            this.booksView = new BooksView({app: this});
-            this.booksView.render();
-        } else {
-            this.booksView.delegateEvents(); // delegate events when the view is recycled
-        }
-        this.main.html(this.booksView.el);
-        this.mainNavView.select('books-menu');
+    books: function (params) {
+      // Since the home view never changes, we instantiate it and render it only once
+      if (!this.booksView) {
+          this.booksView = new BooksView({app: this});
+          this.booksView.render();
+      } else {
+          this.booksView.delegateEvents(); // delegate events when the view is recycled
+      }
+      this.search.set_query(params);
+      this.booksView.set_query(_.isString(params)? params.toLowerCase(): params);
+      this.main.html(this.booksView.el);
+      this.mainNavView.select('books-menu');
     },
-
 
     books_by: function (user) {
         // Since the home view never changes, we instantiate it and render it only once
