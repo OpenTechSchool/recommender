@@ -63,10 +63,10 @@
                     <p style="text-align: right">
                         <small>
                             <% _.each(book.tags, function(tag) { %>
-                                <span class="badge"><%= tag %></span>
+                                <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
                             <% }); %>
                             <% if (book.level) { %>
-                                <span class="badge badge-important"><%= book.level %></span>
+                                <a href="#search/books/level:<%= book.level %>"><span class="badge badge-important"><%= book.level %></span></a>
                             <% } %>
                         </small>
                     </p>
@@ -104,11 +104,11 @@
                         <p><small><%= author %>, <%= published_date %></small></p>
                         <p>Tags:
                                 <% _.each(tags, function(tag) { %>
-                                    <span class="badge"><%= tag %></span>
+                                    <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
                                 <% }); %>
 
                                 <% if (level) { %>
-                                    <br> Level: <span class="badge badge-important"><%= level %></span>
+                                    <br> Level: <a href="#search/books/level:<%= level %>"><span class="badge badge-important"><%= level %></span></a>
                                 <% } %>
                         </p>
                     <h4>Book Descsription</h4>
@@ -171,10 +171,10 @@
                         <p style="text-align: right">
                             <small>
                                 <% _.each(rcd.book.tags, function(tag) { %>
-                                    <span class="badge"><%= tag %></span>
+                                    <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
                                 <% }); %>
                                 <% if (rcd.book.level) { %>
-                                    <span class="badge badge-important"><%= rcd.book.level %></span>
+                                    <a href="#search/books/level:<%= rcd.book.level %>"><span class="badge badge-important"><%= rcd.book.level %></span></a>
                                 <% } %>
                             </small>
                         </p>
