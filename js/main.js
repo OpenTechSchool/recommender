@@ -269,8 +269,7 @@ $(function() {
           "type": "book",
           "item_id": this.model.id
         }).map(function(item){
-          return {"text": item.get("says"),
-                 "user": app.profiles.get(item.get("by")).toJSON()};
+          return item.extendedJSON();
           })
       };
     }
