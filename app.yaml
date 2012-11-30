@@ -1,4 +1,4 @@
-application: recommender
+application: recommendy
 version: 1
 runtime: python27
 api_version: 1
@@ -9,7 +9,7 @@ handlers:
   static_files: static/index.html
   upload: static/index.html
 
-- url: /(.*\.(ico|gif|png|jpg|js|css|less|ico|woff|tff|svg|eot))
+- url: /(.*\.(html|ico|gif|png|jpg|js|css|less|ico|woff|tff|svg|eot))
   static_files: static/\1
   upload: static/(.*\.(gif|png|jpg))
 
