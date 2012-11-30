@@ -114,13 +114,29 @@ $(function() {
       this.books = new Books();
       this.recommendations = new Recommendations();
 
-      this.profiles.fetch();
-      this.books.fetch();
-      this.recommendations.fetch();
-
       this.main = $('#main');
       this.mainNavView = new MainNavView({el: $('#main-nav')});
 
+      this.progress = 10;
+
+    },
+
+    _update_loading_progress: function(additional) {
+      this.progress += additional;
+      this.main.find("#progress-bar").css({"width": this.progress + "%"});
+    },
+
+    start: function() {
+      var me = this;
+      function next() {
+        me._update_loading_progress(30);
+      }
+      return $.when(this.profiles.fetch().then(next),
+            this.books.fetch().then(next),
+            this.recommendations.fetch().then(next)
+          ).then(function() {
+            Backbone.history.start();
+          });
     },
 
     books: function () {
@@ -153,13 +169,10 @@ $(function() {
         // Since the home view never changes, we instantiate it and render it only once
         if (!this.bookView) {
             this.bookView = new BookView({app: this});
-            this.bookView.render();
         } else {
             this.bookView.delegateEvents(); // delegate events when the view is recycled
         }
         this.bookView.model = this.books.get(book);
-        console.log(book);
-        console.log(this.bookView.model);
         this.bookView.render();
         this.main.html(this.bookView.el);
         this.mainNavView.select('books-menu');
@@ -180,7 +193,8 @@ $(function() {
   });
 
   
-  window.App = new Router();
-  Backbone.history.start();
+  var app = new Router();
+  app.start();
+  window.app = app;
 
 });
