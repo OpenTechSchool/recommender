@@ -150,18 +150,22 @@
             <!-- Example row of columns -->
             <div class="row">
                 <div class="span3 offset1">
-                    <img src="http://37signals.com/images/front-cover.png">
+                   <img src="<%= picture_url %>">
                 </div>
-                <div class="span8">
-                    <h2>Rework</h2>
-                    <p><small>Jason Fried &amp; David Heinemeier Hansson, 2010</small></p>
-                    <p>
-                        Tags: <span class="badge">Startup</span> <span class="badge">Culture</span>
-                        <br> Level: <span class="badge badge-important">Beginners</span>
-                    </p>
+                    <div class="span8">
+                        <h2><%= title %></h2>
+                        <p><small><%= author %>, <%= published_date %></small></p>
+                        <p>Tags:
+                                <% _.each(tags, function(tag) { %>
+                                    <span class="badge"><%= tag %></span>
+                                <% }); %>
+
+                                <% if (level) { %>
+                                    <br> Level: <span class="badge badge-important"><%= level %></span>
+                                <% } %>
+                        </p>
                     <h4>Book Descsription</h4>
-                    <p>
-                        Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf.
+                    <p><%= desc %><
                         <a href="">More on amazon.com</a>
                     </p>
                 </div>
@@ -170,52 +174,25 @@
             <br />
             <div class="row">
                 <div class="offset1">
-                    <h3>Recommendations</h3>
+                    <h3>Recomended by</h3>
                 </div>
             </div>
+            <% _.each(recommendations, function(rcd) { %>
 
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="https://github.com/OpenTechSchool/www2.opentechschool.org/blob/master/images/team/Ben.jpg?raw=true">
+                <div class="row">
+                    <div class="span2 offset1">
+                        <img src="<%= rcd.user.picture_url %>">
+                    </div>
+                    <div class="span8">
+                        <h4><%= rcd.user.name %></h4>
+                        <p><small><%= rcd.user.tagline %></small></p>
+                        <blockquote><%= rcd.text %>
+                            <small class="pull-right"><a href="#books/by/<%= rcd.user.id %>">more from <%= rcd.user.nick%></a></small>
+                        </blockquote>
+                    </div>
                 </div>
-                <div class="span8">
-                    <h4>Benjamin Kampmann</h4>
-                    <p><small>OTS Core Member, Python and Javascript Developer</small></p>
-                    <blockquote>
-                        You want to bootstrap your startup. This book cuts it down to the basics and covers all topics on why 37Signals became one of the most successful tech startups ever.
+            <% }); %>
 
-                        <small class="pull-right"><a href="/ben.html">more from Ben</a></small>
-                    </blockquote>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="https://github.com/OpenTechSchool/www2.opentechschool.org/blob/master/images/team/beatrice.jpg?raw=true">
-                </div>
-                <div class="span8">
-                    <h4>Beatrice Martini</h4>
-                    <p><small>OTS Core Member, Project Manager</small></p>
-                    <blockquote>
-                        You want to bootstrap your startup. This book cuts it down to the basics and covers all topics on why 37Signals became one of the most successful tech startups ever.
-                        <small class="pull-right"><a href="/ben.html">more from Bea</a></small>
-                    </blockquote>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="https://github.com/OpenTechSchool/www2.opentechschool.org/blob/master/images/team/Stefan.jpg?raw=true">
-                </div>
-                <div class="span8">
-                    <h4>Stefan Hoth</h4>
-                    <p><small>OTS Core Member, Android Freelancer</small></p>
-                    <blockquote>
-                        You want to bootstrap your startup. This book cuts it down to the basics and covers all topics on why 37Signals became one of the most successful tech startups ever.
-                        <small class="pull-right"><a href="/ben.html">more from Stefan</a></small>
-                    </blockquote>
-                </div>
-            </div>
         </script>
 
         <script type="text/template" id="tmpl-books-by">

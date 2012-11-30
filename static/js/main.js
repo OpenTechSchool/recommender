@@ -4,13 +4,16 @@ $(function() {
   // Util
   var TmplView = Backbone.View.extend({
 
+    default_context: {},
+
     extend_context: function() {
       return {};
     },
     render:function () {
       var context = _.extend({},
-            this.model ? this.model.toJSON() : {},
-            this.extend_context());
+          this.default_context,
+          this.model ? this.model.toJSON() : {},
+          this.extend_context());
 
       $(this.el).html(this.template(context));
       return this;
@@ -46,20 +49,7 @@ $(function() {
   });
 
   var BooksView = TmplView.extend({
-    template: _.template($('#tmpl-books').html()),
-
-    extend_context: function() {
-      var app = this.options.app;
-      console.log(this);
-      return {"recommendations": app.recommendations.where({
-          "type": "book",
-          "item_id": this.model.id
-        }).map(function(item){
-          console.log(item);
-          return {"text": item.says, "user": app.profiles.get(item.by).toJSON()};
-          })
-      };
-    }
+    template: _.template($('#tmpl-books').html())
   });
 
   var BooksByView = TmplView.extend({
@@ -71,8 +61,6 @@ $(function() {
           "type": "book",
           "by": this.model.id
         }).map(function(item){
-          console.log(item.get("item_id"));
-          console.log(app.books.get(item.get("item_id")));
           return {"text": item.get("says"),
                   "book": app.books.get(item.get("item_id")).toJSON()};
           })
@@ -81,7 +69,22 @@ $(function() {
   });
 
   var BookView = TmplView.extend({
-     template: _.template($('#tmpl-book').html())
+     default_context: {"level": null},
+     template: _.template($('#tmpl-book').html()),
+
+    extend_context: function() {
+      var app = this.options.app;
+      console.log(this);
+      return {"recommendations": app.recommendations.where({
+          "type": "book",
+          "item_id": this.model.id
+        }).map(function(item){
+          console.log(item);
+          return {"text": item.get("says"),
+                 "user": app.profiles.get(item.get("by")).toJSON()};
+          })
+      };
+    }
   });
 
   var MainNavView = Backbone.View.extend({
@@ -154,6 +157,10 @@ $(function() {
         } else {
             this.bookView.delegateEvents(); // delegate events when the view is recycled
         }
+        this.bookView.model = this.books.get(book);
+        console.log(book);
+        console.log(this.bookView.model);
+        this.bookView.render();
         this.main.html(this.bookView.el);
         this.mainNavView.select('books-menu');
     },
