@@ -45,104 +45,51 @@
             </div>
         </script>
 
+        <script type="text/template" id="tmpl-book-item">
+
+            <!-- Example row of columns -->
+            <div class="row">
+                <div class="span2 offset1">
+                    <img src="<%= book.picture_url %>">
+                </div>
+                <div class="span8">
+                    <h2><%= book.title %></h2>
+                    <p><small><%= book.author %>, <%= book.published_date %></small></p>
+                    <blockquote>
+                        <p><%= rcd.says %>
+                        <small><a href="#books/by/<%= user.id %>"><%= user.name %>, <%= user.tagline %></a></small>
+                        </p>
+                    </blockquote>
+                    <p style="text-align: right">
+                        <small>
+                            <% _.each(book.tags, function(tag) { %>
+                                <span class="badge"><%= tag %></span>
+                            <% }); %>
+                            <% if (book.level) { %>
+                                <span class="badge badge-important"><%= book.level %></span>
+                            <% } %>
+                        </small>
+                    </p>
+                </div>
+            </div>
+
+            <br />
+        </script>
+
         <script type="text/template" id="tmpl-books">
 
             <div class="row">
                 <div class="offset2 span8">
                     <ul class="nav nav-pills">
-                        <li><a href="#">latest books</a></li>
-                        <li class="active"><a href="#">most recommended</a></li>
-                        <li><a href="#">latest recommendation</a></li>
+                        <li id="sub-menu-lb"><a data-menu-item="lb" href="#">latest books</a></li>
+                        <li id="sub-menu-mr" class="active"><a data-menu-item="mr" href="#">most recommended</a></li>
+                        <li id="sub-menu-lr"><a data-menu-item="lr" href="#">latest recommendation</a></li>
                     </ul>
                 </div>
             </div>
-
-            <!-- Example row of columns -->
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="http://37signals.com/images/front-cover.png">
-                </div>
-                <div class="span8">
-                    <h2>Rework</h2>
-                    <p><small>Jason Fried &amp; David Heinemeier Hansson, 2010</small></p>
-                    <blockquote>
-                        <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="#">read more recommendations</a></p>
-                        <small><a href="/ben.html">Benjamin Kampmann</a>, OTS Core Member</small>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <span class="badge">Startup</span> <span class="badge">Culture</span> <span class="badge badge-important">Beginners</span>
-                        </small>
-                    </p>
-                </div>
+            <div id="book-list">
             </div>
 
-            <br />
-
-            <div class="row">
-                <div class="span2 offset1" >
-                    <img src="http://bks9.books.google.de/books?id=--K-DvEj7yAC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE70-x_lnPSGTDC7rHMwxz-iA7uMUiEcni7UZdHuev9A25UZXc2gLRgN0a2HAphK8XXYCi5i0kJo-6JdOxhfXx_sdQOLfT_ZoBxmb9UQx-8W5vgoU_iNhaU6mReLs5-13neEtL4FM" >
-                </div>
-                <div class="span8">
-                    <h2>Just for fun</h2>
-                    <p><small>Linus Torvalds, David Diamond, 2002</small></p>
-                    <blockquote>
-                        <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="#">read more recommendations</a></p>
-                        <small><a href="#books/by/ben">Benjamin Kampmann</a>, OTS Core Member</small>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <span class="badge">Culture</span> <span class="badge">Hacking</span>  <span class="badge">OpenSource</span> <span class="badge">Retrospection</span>
-                        </small>
-                    </p>
-                </div>
-            </div>
-
-            <br />
-
-
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="http://bks7.books.google.de/books?id=toGKQAAACAAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE731VPXtw7B9J5aw-nwsu79lmPLZ_EM1bSabyWdvkyG2b8mYSCQY7Id0JiwP9coMRl2affGLStTbB4IEVXUnUo7juEe42TylYysG7TbiruwI208Wxedbl762Ip39SrxeVMAK24gf">
-                </div>
-                <div class="span8">
-                    <h2>Programming Erlang</h2>
-                    <p><small>Joe Armstrong, 2007</small></p>
-                    <blockquote>
-                        <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="#">read more recommendations</a></p>
-                        <small><a href="#books/by/ben">Benjamin Kampmann</a>, OTS Core Member</small>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <span class="badge">Erlang</span> <span class="badge">Programming</span> <span class="badge">Compendium</span> <span class="badge badge-important">Advanced</span>
-                        </small>
-                    </p>
-                </div>
-            </div>
-
-
-            <br />
-
-
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="http://ecx.images-amazon.com/images/I/511j6cza5bL._AA160_.jpg">
-                    <p><small><a href="http://books.google.de/books?id=PXa2bby0oQ0C&printsec=frontcover#v=onepage&q&f=false">Read online (free)</a></small></p>
-                </div>
-                <div class="span8">
-                    <h2>Javascript: The Good Parts</h2>
-
-                    <p><small>Douglas Crockford, 2008</p>
-                    <blockquote>
-                        <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="#">read more recommendations</a></p>
-                        <small><a href="/ben.html">Benjamin Kampmann</a>, OTS Core Member</small>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <span class="badge">Javascript</span> <span class="badge">Programming</span> <span class="badge">Compendium</span> <span class="badge badge-important">Intermediate</span>
-                        </small>
-                    </p>
-                </div>
         </script>
 
         <script type="text/template" id="tmpl-book">
@@ -186,7 +133,7 @@
                     <div class="span8">
                         <h4><%= rcd.user.name %></h4>
                         <p><small><%= rcd.user.tagline %></small></p>
-                        <blockquote><%= rcd.text %>
+                        <blockquote><%= rcd.says %>
                             <small class="pull-right"><a href="#books/by/<%= rcd.user.id %>">more from <%= rcd.user.nick%></a></small>
                         </blockquote>
                     </div>
@@ -219,7 +166,7 @@
                         <h2><%= rcd.book.title %></h2>
                         <p><small><%= rcd.book.author %>, <%= rcd.book.published_date %></small></p>
                         <blockquote>
-                            <p><%= rcd.text %> <a href="#books/<%= rcd.book.id %>">read more recommendations</a></p>
+                            <p><%= rcd.says %> <a href="#books/<%= rcd.book.id %>">read more recommendations</a></p>
                         </blockquote>
                         <p style="text-align: right">
                             <small>

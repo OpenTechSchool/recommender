@@ -19,12 +19,55 @@ $(function() {
       return this;
     }
   });
+  /*
+  function cached_func(func) {
+    function wrapped() {
+      if (!func.cached) {
+        func.cached = func.apply(arguments);
+      }
+      return func.cached;
+    }
+    return wrapped;
+  }*/
 
   // Models
 
-  var Profile = Backbone.Model.extend({});
-  var Book = Backbone.Model.extend({});
-  var Recommendation = Backbone.Model.extend({});
+  var Profile = Backbone.Model.extend({
+    get_recommendations: function() {
+
+    }
+
+  });
+  var Book = Backbone.Model.extend({
+    getRecommendationCount: function() {
+        var app = this.collection.app;
+        return app.recommendations.where({"item_id": this.id}).length;
+    },
+    latestRecommendation: function() {
+      var app = this.collection.app,
+          my_id = this.get("id");
+      return app.recommendations.find(function(item){
+        return item.get("item_id") == my_id;
+      });
+    }
+
+  });
+  var Recommendation = Backbone.Model.extend({
+    extendedJSON: function() {
+        var json = this.toJSON(),
+            app = this.collection.app;
+        json["user"] = this.getUser().toJSON();
+        json["book"] = this.getBook().toJSON();
+      return json;
+    },
+    getUser: function() {
+      return this.collection.app.profiles.get(this.get("by"));
+    },
+    getBook: function() {
+      return this.collection.app.books.get(this.get("item_id"));
+    }
+
+  });
 
   // Model Collections
   var Profiles = Backbone.Collection.extend({
@@ -44,16 +87,97 @@ $(function() {
 
 
   // Views
-	var HomeView = TmplView.extend({
-     template: _.template($('#tmpl-main').html())
+	var HomeView = Backbone.View.extend({
+     template: _.template($('#tmpl-main').html()),
+
+    render: function () {
+      $(this.el).html(this.template());
+      return this;
+    }
   });
 
-  var BooksView = TmplView.extend({
-    template: _.template($('#tmpl-books').html())
+  var BooksView = Backbone.View.extend({
+    template: _.template($('#tmpl-books').html()),
+    itemTemplate: _.template($('#tmpl-book-item').html()),
+
+    sub_menu: "mr",
+    item_count: 10,
+
+    events: {
+      "click .nav li a": "select_menu"
+    },
+
+    update_books: function() {
+      var $el = $(this.el),
+          $target = $el.find("#book-list").html("Loading...");
+          app = this.options.app,
+          view = this,
+          rendered = [];
+
+      $el.find(".nav li").removeClass("active");
+      $el.find("#sub-menu-" + this.sub_menu).addClass("active");
+
+      if (this.sub_menu == "lb") {
+        $target.empty();
+        _.each(app.books.first(this.item_count), function(book) {
+          var rcm = book.latestRecommendation();
+          if (!rcm) {
+            // no recommendation found
+            return;
+          }
+          $target.append(view.itemTemplate({
+            book: book.toJSON(),
+            rcd: rcm.toJSON(),
+            user: rcm.getUser().toJSON()
+          }));
+        });
+      } else if (this.sub_menu === "lr") {
+        $target.empty();
+        _.each(app.recommendations.first(this.item_count), function(rcm) {
+          $target.append(view.itemTemplate({
+            book: rcm.getBook().toJSON(),
+            rcd: rcm.toJSON(),
+            user: rcm.getUser().toJSON()
+          }));
+        });
+      } else {
+        // this must be most recommended
+        var selected_books = _.first(app.books.sortBy(function(book) {
+              return book.getRecommendationCount();
+            }), this.item_count);
+        $target.empty();
+        _.each(selected_books,function(book) {
+          var rcm = book.latestRecommendation();
+          if (!rcm) {
+            // no recommendation found
+            return;
+          }
+          $target.append(view.itemTemplate({
+            book: book.toJSON(),
+            rcd: rcm.toJSON(),
+            user: rcm.getUser().toJSON()
+          }));
+        });
+      }
+    },
+
+    select_menu: function(ev) {
+      this.sub_menu = $(ev.currentTarget).data("menu-item");
+      this.update_books();
+      return false;
+    },
+
+    render: function () {
+      $(this.el).html(this.template());
+      this.update_books();
+      return this;
+    }
+
+
   });
 
   var BooksByView = TmplView.extend({
-     template: _.template($('#tmpl-books-by').html()),
+    template: _.template($('#tmpl-books-by').html()),
 
     extend_context: function() {
       var app = this.options.app;
@@ -61,8 +185,7 @@ $(function() {
           "type": "book",
           "by": this.model.id
         }).map(function(item){
-          return {"text": item.get("says"),
-                  "book": app.books.get(item.get("item_id")).toJSON()};
+          return item.extendedJSON();
           })
       };
     }
@@ -113,6 +236,8 @@ $(function() {
       this.profiles = new Profiles();
       this.books = new Books();
       this.recommendations = new Recommendations();
+
+      this.profiles.app = this.books.app = this.recommendations.app = this;
 
       this.main = $('#main');
       this.mainNavView = new MainNavView({el: $('#main-nav')});
