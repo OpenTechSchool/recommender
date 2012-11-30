@@ -11,7 +11,7 @@ handlers:
 
 - url: /(.*\.(html|ico|gif|png|jpg|js|css|less|ico|woff|tff|svg|eot))
   static_files: static/\1
-  upload: static/(.*\.(gif|png|jpg))
+  upload: static/(.*\.(html|ico|gif|png|jpg|js|css|less|ico|woff|tff|svg|eot))
 
 - url: /.*
   script: main.app
