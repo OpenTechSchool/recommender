@@ -56,7 +56,7 @@
                     <h2><%= book.title %></h2>
                     <p><small><%= book.author %>, <%= book.published_date %></small></p>
                     <blockquote>
-                        <p><%= rcd.says %>
+                        <p><%= rcd.says %> <a href="#books/<%= book.id %>">read more recommendations</a></p>
                         <small><a href="#books/by/<%= user.id %>"><%= user.name %>, <%= user.tagline %></a></small>
                         </p>
                     </blockquote>
