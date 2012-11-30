@@ -110,7 +110,7 @@
                     <p><small>Joe Armstrong, 2007</small></p>
                     <blockquote>
                         <p>Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully... <a href="#">read more recommendations</a></p>
-                        <small><a href="/ben.html">Benjamin Kampmann</a>, OTS Core Member</small>
+                        <small><a href="#books/by/ben">Benjamin Kampmann</a>, OTS Core Member</small>
                     </blockquote>
                     <p style="text-align: right">
                         <small>
@@ -221,13 +221,13 @@
         <script type="text/template" id="tmpl-books-by">
 
             <div class="row well">
-                <img class="span3" src="https://github.com/OpenTechSchool/www2.opentechschool.org/blob/master/images/team/Ben.jpg?raw=true">
+                <img class="span3" src="<%= picture_url %>">
             
                 <div class="span8">
 
-                    <h4>Benjamin Kampmann</h4>
-                    <p><small>OTS Core Member, Python and Javascript Developer</small></p>
-                    <p>Hi, I`m Ben. I am a Member of the Core Team of OpenTechSchool in Berlin and work on strategic and administrative stuff. Originally I am a self learnt Software Developer, mostly doing Python and Javascript for my Startup lately.</p>
+                    <h4><%= name %></h4>
+                    <p><small><%= tagline %></small></p>
+                    <p><%= about %></p>
                 </div>
             </div>
 

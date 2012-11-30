@@ -1,15 +1,32 @@
 
-console.log($);
-
 $(function() {
 
+  // Util
   var TmplView = Backbone.View.extend({
-      render:function () {
-          $(this.el).html(this.template());
-          return this;
+    make_context: function() {
+      if (!this.model) {
+        return {};
       }
+      return this.model.attributes;
+    },
+    render:function () {
+        $(this.el).html(this.template(this.make_context()));
+        return this;
+    }
   });
 
+  // Models
+
+  var Profile = Backbone.Model.extend({});
+
+  // Model Collections
+  var Profiles = Backbone.Collection.extend({
+    model: Profile,
+    url: "data/profiles.json"
+  });
+
+
+  // Views
 	var HomeView = TmplView.extend({
      template: _.template($('#tmpl-main').html())
   });
@@ -28,7 +45,6 @@ $(function() {
 
   var MainNavView = Backbone.View.extend({
     select: function(to_select) {
-      console.log(this);
       var me = this.$el;
       me.find("li").removeClass("active");
       me.find("#" + to_select).addClass("active");
@@ -50,8 +66,12 @@ $(function() {
     el: $("body"),
 
     initialize: function() {
+      this.profiles = new Profiles();
+      this.profiles.fetch();
+
       this.main = $('#main');
       this.mainNavView = new MainNavView({el: $('#main-nav')});
+
     },
 
     books: function () {
@@ -71,10 +91,11 @@ $(function() {
         // Since the home view never changes, we instantiate it and render it only once
         if (!this.booksByView) {
             this.booksByView = new BooksByView();
-            this.booksByView.render();
         } else {
             this.booksByView.delegateEvents(); // delegate events when the view is recycled
         }
+        this.booksByView.model = this.profiles.get(user);
+        this.booksByView.render();
         this.main.html(this.booksByView.el);
         this.mainNavView.select('books-menu');
     },

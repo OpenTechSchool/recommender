@@ -1,0 +1,20 @@
+[
+	{
+		"id": "ben",
+		"nick": "Ben",
+		"name": "Benjamin Kampmann",
+		"picture_url": "https://github.com/OpenTechSchool/www2.opentechschool.org/blob/master/images/team/Ben.jpg?raw=true",
+    "tagline": "OTS Core Member, Python and Javascript Developer",
+    "about": "Hi, I`m Ben. I am a Member of the Core Team of OpenTechSchool in Berlin and work on strategic and administrative stuff. Originally I am a self learnt Software Developer, mostly doing Python and Javascript for my Startup lately."
+	},
+
+    {
+    "id": "bea",
+    "nick": "Bea",
+    "name": "Beatrice Martini",
+    "picture_url": "https://github.com/OpenTechSchool/www2.opentechschool.org/blob/master/images/team/beatrice.jpg?raw=true",
+    "tagline": "OTS Core Member, Project Manager",
+    "about": "Hi, I`m Bea, I do rock the boat."
+  }
+
+]
