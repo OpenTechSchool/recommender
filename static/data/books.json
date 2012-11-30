@@ -1,0 +1,46 @@
+[
+	{
+		"id": "rework",
+		"title": "Rework",
+		"picture_url": "http://37signals.com/images/front-cover.png",
+    "author": "Jason Fried & David Heinemeier Hansson",
+    "published_date": "2010",
+    "level": "beginners",
+    "tags": ["startup", "culture"],
+    "desc": "Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf."
+	},
+
+  {
+    "id": "just_for_fun",
+    "title": "Just for fun",
+    "picture_url": "http://bks9.books.google.de/books?id=--K-DvEj7yAC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE70-x_lnPSGTDC7rHMwxz-iA7uMUiEcni7UZdHuev9A25UZXc2gLRgN0a2HAphK8XXYCi5i0kJo-6JdOxhfXx_sdQOLfT_ZoBxmb9UQx-8W5vgoU_iNhaU6mReLs5-13neEtL4FM",
+    "author": "Linus Torvalds, David Diamond",
+    "published_date": "2002",
+    "tags": ["hacking", "culture", "opensource", "retrospection"],
+    "desc": "Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf."
+  },
+
+  {
+    "id": "programming_erlang",
+    "title": "Programming Erlang",
+    "picture_url": "http://bks7.books.google.de/books?id=toGKQAAACAAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE731VPXtw7B9J5aw-nwsu79lmPLZ_EM1bSabyWdvkyG2b8mYSCQY7Id0JiwP9coMRl2affGLStTbB4IEVXUnUo7juEe42TylYysG7TbiruwI208Wxedbl762Ip39SrxeVMAK24gf",
+    "author": "Joe Armstrong",
+    "published_date": "2007",
+    "level": "advanced",
+    "tags": ["programming", "erlang", "compendium", "retrospection"],
+    "desc": "Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf."
+  },
+
+  {
+    "id": "javascript_the_good_parts",
+    "title": "Javascript: The Good Parts",
+    "picture_url": "http://ecx.images-amazon.com/images/I/511j6cza5bL._AA160_.jpg",
+    "author": "Douglas Crockford",
+    "published_date": "2008",
+    "level": "intermediate",
+    "tags": ["programming", "javascript", "compendium"],
+    "desc": "Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf.",
+    "free_read_link": "http://books.google.de/books?id=PXa2bby0oQ0C&printsec=frontcover#v=onepage&q&f=false"
+  }
+
+]
