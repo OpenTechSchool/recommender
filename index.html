@@ -152,9 +152,9 @@
                         <img src="<%= rcd.user.picture_url %>">
                     </div>
                     <div class="span8">
-                        <h4><%= rcd.user.name %></h4>
-                        <p><small><%= rcd.user.tagline %></small></p>
-                        <blockquote><%= rcd.says %>
+                        <h4 class="js-editable" data-name="profiles.name" data-pk="<%= rcd.user.id %>" data-type="text"><%= rcd.user.name %></h4>
+                        <p><small class="js-editable" data-name="profiles.tagline" data-pk="<%= rcd.user.id %>" data-type="text"><%= rcd.user.tagline %></small></p>
+                        <blockquote><p class="js-editable" data-name="recommendations.says" data-pk="<%= rcd.id %>" data-type="textarea" data-inputclass="span8"><%= rcd.says %></p>
                             <small class="pull-right"><a href="#books/by/<%= rcd.user.id %>">more from <%= rcd.user.nick%></a></small>
                         </blockquote>
                     </div>

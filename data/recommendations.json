@@ -1,11 +1,13 @@
 [
   {
+    "id": "keimlink.learning-python",
     "by": "keimlink",
     "type": "book",
     "item_id": "learning-python",
     "says": "Learn about Python's major built-in object types, such as numbers, lists, and dictionaries. Create and process objects using Python statements, and learn Python's general syntax model. Structure and reuse code using functions."
   },
 	{
+    "id": "ben.rework",
 		"by": "ben",
 		"type": "book",
 		"item_id": "rework",
@@ -13,6 +15,7 @@
 	},
 
   {
+    "id": "ben.just-for-fun",
     "by": "ben",
     "type": "book",
     "item_id": "just-for-fun",
@@ -20,6 +23,7 @@
   },
 
   {
+    "id": "bea.just-for-fun",
     "by": "bea",
     "type": "book",
     "item_id": "just-for-fun",
