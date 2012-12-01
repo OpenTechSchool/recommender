@@ -10,21 +10,6 @@ $(function() {
       return {};
     },
 
-    apply_js: function() {
-      $(this.el).find(".js-editable").editable({
-        url: $.proxy(this._submit_editable)
-      });
-    },
-    _submit_editable: function(content){
-      var splitted = content.name.split(".", 2),
-          collection_name = splitted[0],
-          item_key = splitted[1],
-          model = this.app[collection_name].get(content.pk);
-      console.log(content);
-      console.log(model);
-      model.set(item_key, content.value);
-      console.log(model);
-    },
     render:function () {
       var context = _.extend({},
           this.default_context,
@@ -32,7 +17,6 @@ $(function() {
           this.extend_context());
 
       $(this.el).html(this.template(context));
-      this.apply_js();
       return this;
     }
   });
@@ -234,7 +218,7 @@ $(function() {
       }
 
       if ($target.children().length === 0) {
-        $target.html('<div class="alert">' + 
+        $target.html('<div class="alert">' +
           '<strong>Empty Set</strong>. We are not able to find any matches.' +
           '</div>');
       }
@@ -332,20 +316,40 @@ $(function() {
         "books/": "books"
     },
 
+    edit_mode: false,
+
     el: $("body"),
 
+    _submit_editable: function(content){
+      var splitted = content.name.split(".", 2),
+          collection_name = splitted[0],
+          item_key = splitted[1],
+          model = this.app[collection_name].get(content.pk);
+      model.set(item_key, content.value);
+    },
+
     initialize: function() {
-      this.profiles = new Profiles();
-      this.books = new Books();
-      this.recommendations = new Recommendations();
+      var app = this;
+      app.profiles = new Profiles();
+      app.books = new Books();
+      app.recommendations = new Recommendations();
 
-      this.profiles.app = this.books.app = this.recommendations.app = this;
+      app.profiles.app = app.books.app = app.recommendations.app = app;
 
-      this.main = $('#main');
-      this.search = new SearchFormView({el: $('#search-form'), app:this});
-      this.mainNavView = new MainNavView({el: $('#main-nav')});
+      app.main = $('#main');
+      app.search = new SearchFormView({el: $('#search-form'), app:app});
+      app.mainNavView = mainNavView = new MainNavView({el: $('#main-nav')});
 
-      this.progress = 10;
+      app.progress = 10;
+
+      app.on("pageLoaded", function(target) {
+        mainNavView.select(target);
+        if (app.edit_mode){
+          $(app.el).find(".js-editable").editable({
+            url: $.proxy(this._submit_editable)
+          });
+        }
+      });
 
     },
 
@@ -378,7 +382,7 @@ $(function() {
       this.search.set_query(params);
       this.booksView.set_query(_.isString(params)? params.toLowerCase(): params);
       this.main.html(this.booksView.el);
-      this.mainNavView.select('books-menu');
+      this.trigger("pageLoaded", "books-menu");
     },
 
     books_by: function (user) {
@@ -391,7 +395,7 @@ $(function() {
         this.booksByView.model = this.profiles.get(user);
         this.booksByView.render();
         this.main.html(this.booksByView.el);
-        this.mainNavView.select('books-menu');
+      this.trigger("pageLoaded", "books-menu");
     },
 
     book: function (book) {
@@ -404,7 +408,7 @@ $(function() {
         this.bookView.model = this.books.get(book);
         this.bookView.render();
         this.main.html(this.bookView.el);
-        this.mainNavView.select('books-menu');
+        this.trigger("pageLoaded", "books-menu");
     },
 
     home: function () {
@@ -416,7 +420,7 @@ $(function() {
             this.homeView.delegateEvents(); // delegate events when the view is recycled
         }
         this.main.html(this.homeView.el);
-        this.mainNavView.select('home-menu');
+        this.trigger("pageLoaded", "home-menu");
     }
 
   });
