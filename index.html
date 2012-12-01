@@ -210,13 +210,13 @@
         <script type="text/template" id="tmpl-login-bar">
           <li class="divider-vertical"></li>
           <li class="dropdown">
-            <% if (!github) {%>
+            <% if (!state.authenticated) {%>
               <a class="dropdown-toggle" href="#" data-toggle="dropdown">
                 <small>Github Login<i class="caret"></i></small>
               </a>
               <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
                 <small>
-                  <p>Please provide your Github login information</p>
+                  <p id="js-msg">Please provide your Github login information</p>
                   <form method="post" accept-charset="UTF-8">
                     <input style="margin-bottom: 15px;" type="text" placeholder="Username" id="username" name="username">
                     <input style="margin-bottom: 15px;" type="password" placeholder="Password" id="password" name="password">
@@ -226,12 +226,17 @@
               </div>
             <% } else { %>
               <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                <small><%= github.username%><i class="caret"></i></small>
+                <small>editing as: <%= state.username%><i class="caret"></i></small>
               </a>
               <ul class="dropdown-menu">
+                <li class="nav-header">Add</li>
+                  <li><a href="#add/profile"><i class="icon-user"></i> Profile</a></li>
+                  <li><a href="#add/book"><i class="icon-book"></i> Book</a></li>
+                  <li><a href="#add/recommendation"><i class="icon-comment"></i> Recommendation</a></li>
+                <li class="divider"></li>
+                <li class="nav-header">Project</li>
+                  <li><a href="#save/changes"><i class="icon-edit"></i> Toggle Edit-Mode</a></li>
                   <li><a href="#save/changes"><i class="icon-envelope"></i> Prepare Pull-Request</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#logout"><i class="icon-off"></i> Logout</a></li>
               </ul>
             <% } %>
           </li>
@@ -287,6 +292,7 @@
         <script src="js/vendor/json2.js"></script>
         <script src="js/vendor/backbone-min.js"></script>
         <script src="js/vendor/base64.js"></script>
+        <script src="js/vendor/jquery.cookie.js"></script>
         <script src="js/vendor/github.js"></script>
         <script src="js/vendor/bootstrap-editable-inline.min.js"></script>
         <script src="js/main.js"></script>

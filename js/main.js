@@ -302,28 +302,37 @@ $(function() {
       "submit form": "login_submit"
     },
 
+    initialize: function() {
+      this.options.app.state.on("change", $.proxy(this.render_login_bar, this));
+    },
+
     render_login_bar: function() {
       $(this.el).find("#login-bar").html(
-          this.template({github: this.options.app.github}));
+          this.template({state: this.options.app.state.toJSON()}));
     },
 
     login_submit: function() {
-      console.log("whot?");
-        var me = this,
-            username= $(this.el).find("#username").val(),
-            github = new Github({
-              username: username,
-              password: $(this.el).find("#password").val(),
-              auth: "basic"
-            }),
-            repo = github.getRepo("ligthyear", "recommender");
+      var me = this,
+          username = $(this.el).find("#username").val(),
+          github = new Github({
+            username: username,
+            password: $(this.el).find("#password").val(),
+            auth: "basic"
+          }),
+          repo = github.getRepo("ligthyear", "recommender");
 
-        repo.show(function(err, repo) {
-          github.username = username;
-          me.options.app.github = github;
-          me.options.app.repo = repo;
-          me.options.app.edit_mode = true;
-          me.render_login_bar();
+      repo.show(function(err, repo) {
+        if (err && err.error) {
+          $(me.el).find("#js-msg").html(err.request.statusText + " Please try again.");
+          return;
+        }
+        me.options.app.state.set({
+            "authenticated": true,
+            "github": github,
+            "username": username,
+            "repo": repo,
+            "edit_mode" : true
+          });
         });
       return false;
     },
@@ -334,6 +343,13 @@ $(function() {
       me.find("#" + to_select).addClass("active");
     }
 
+  });
+
+  var AppState = Backbone.Model.extend({
+    defaults: {
+      authenticated: false,
+      edit_mode: false
+    }
   });
 
 
@@ -348,8 +364,6 @@ $(function() {
         "books/": "books"
     },
 
-    edit_mode: false,
-
     el: $("body"),
 
     _submit_editable: function(content){
@@ -362,6 +376,7 @@ $(function() {
 
     initialize: function() {
       var app = this;
+      app.state = new AppState({});
       app.profiles = new Profiles();
       app.books = new Books();
       app.recommendations = new Recommendations();
@@ -369,8 +384,8 @@ $(function() {
       app.profiles.app = app.books.app = app.recommendations.app = app;
 
       app.main = $('#main');
-      app.search = new SearchFormView({el: $('#search-form'), app:app});
-      app.mainNavView = mainNavView = new MainNavView({el: $('#navbar'), app:app});
+      app.search = new SearchFormView({el: $('#search-form'), app: app});
+      app.mainNavView = mainNavView = new MainNavView({el: $('#navbar'), app: app});
 
       mainNavView.render_login_bar();
 
@@ -378,7 +393,7 @@ $(function() {
 
       app.on("pageLoaded", function(target) {
         mainNavView.select(target);
-        if (app.edit_mode){
+        if (app.state.get("edit_mode")){
           $(app.el).find(".js-editable").editable({
             url: $.proxy(this._submit_editable)
           });
