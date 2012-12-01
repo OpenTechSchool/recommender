@@ -207,6 +207,36 @@
             </div>
         </script>
 
+        <script type="text/template" id="tmpl-login-bar">
+          <li class="divider-vertical"></li>
+          <li class="dropdown">
+            <% if (!github) {%>
+              <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                <small>Github Login<i class="caret"></i></small>
+              </a>
+              <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+                <small>
+                  <p>Please provide your Github login information</p>
+                  <form method="post" accept-charset="UTF-8">
+                    <input style="margin-bottom: 15px;" type="text" placeholder="Username" id="username" name="username">
+                    <input style="margin-bottom: 15px;" type="password" placeholder="Password" id="password" name="password">
+                    <button class="btn btn-primary btn-block" type="submit" id="log-in">Log into Github</button>
+                  </form>
+                </small>
+              </div>
+            <% } else { %>
+              <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                <small><%= github.username%><i class="caret"></i></small>
+              </a>
+              <ul class="dropdown-menu">
+                  <li><a href="#save/changes"><i class="icon-envelope"></i> Prepare Pull-Request</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#logout"><i class="icon-off"></i> Logout</a></li>
+              </ul>
+            <% } %>
+          </li>
+        </script>
+        
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
@@ -214,27 +244,27 @@
         <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
 
         <div id="navbar" class="navbar">
-            <div class="navbar-inner">
-                <div class="container">
-
-                    <a class="brand" href="#">recommendly</a>
-                    <ul class="nav" id="main-nav">
-                        <li id="home-menu" class="active"><a href="#/">Home</a></li>
-                        <li id="books-menu"><a href="#books/">Books</a></li>
-                        <li id="videos-menu"><a href="/videos.html">Videos</a></li>
-                        <li id="courses-menu"><a href="/courses.html">Courses</a></li>
-                    </ul>
-                    <div id="search-form">
-                        <form class="navbar-search pull-right">
-                            <input type="text" class="search-query" name="search" placeholder="Search">
-                        </form>
-                    </div>
-                </div>
+          <div class="navbar-inner">
+            <div class="container">
+              <a class="brand" href="#">recommendly</a>
+              <ul class="nav" id="main-nav">
+                  <li id="home-menu" class="active"><a href="#/">Home</a></li>
+                  <li id="books-menu"><a href="#books/">Books</a></li>
+                  <li id="videos-menu"><a href="/videos.html">Videos</a></li>
+                  <li id="courses-menu"><a href="/courses.html">Courses</a></li>
+              </ul>
+              <ul class="nav pull-right" id="login-bar">
+                </ul>
             </div>
+          </div>
         </div>
 
         <div class="container">
-
+            <div id="search-form" class="clearfix">
+                <form class="navbar-search pull-right">
+                    <input type="text" class="search-query" name="search" placeholder="Search">
+                </form>
+            </div>
             <div id="main">
 
                 <div style="position: absolute; left: 35%; top:35%; width: 30%" class="progress progress-striped progress-danger active">
@@ -256,6 +286,8 @@
         <script src="js/vendor/underscore-min.js"></script>
         <script src="js/vendor/json2.js"></script>
         <script src="js/vendor/backbone-min.js"></script>
+        <script src="js/vendor/base64.js"></script>
+        <script src="js/vendor/github.js"></script>
         <script src="js/vendor/bootstrap-editable-inline.min.js"></script>
         <script src="js/main.js"></script>
 

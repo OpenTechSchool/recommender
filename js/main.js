@@ -296,9 +296,41 @@ $(function() {
   });
 
   var MainNavView = Backbone.View.extend({
+    template: _.template($('#tmpl-login-bar').html()),
+
+    events : {
+      "submit form": "login_submit"
+    },
+
+    render_login_bar: function() {
+      $(this.el).find("#login-bar").html(
+          this.template({github: this.options.app.github}));
+    },
+
+    login_submit: function() {
+      console.log("whot?");
+        var me = this,
+            username= $(this.el).find("#username").val(),
+            github = new Github({
+              username: username,
+              password: $(this.el).find("#password").val(),
+              auth: "basic"
+            }),
+            repo = github.getRepo("ligthyear", "recommender");
+
+        repo.show(function(err, repo) {
+          github.username = username;
+          me.options.app.github = github;
+          me.options.app.repo = repo;
+          me.options.app.edit_mode = true;
+          me.render_login_bar();
+        });
+      return false;
+    },
+
     select: function(to_select) {
       var me = this.$el;
-      me.find("li").removeClass("active");
+      me.find("#main-nav li").removeClass("active");
       me.find("#" + to_select).addClass("active");
     }
 
@@ -338,7 +370,9 @@ $(function() {
 
       app.main = $('#main');
       app.search = new SearchFormView({el: $('#search-form'), app:app});
-      app.mainNavView = mainNavView = new MainNavView({el: $('#main-nav')});
+      app.mainNavView = mainNavView = new MainNavView({el: $('#navbar'), app:app});
+
+      mainNavView.render_login_bar();
 
       app.progress = 10;
 
