@@ -9,6 +9,22 @@ $(function() {
     extend_context: function() {
       return {};
     },
+
+    apply_js: function() {
+      $(this.el).find(".js-editable").editable({
+        url: $.proxy(this._submit_editable)
+      });
+    },
+    _submit_editable: function(content){
+      var splitted = content.name.split(".", 2),
+          collection_name = splitted[0],
+          item_key = splitted[1],
+          model = this.app[collection_name].get(content.pk);
+      console.log(content);
+      console.log(model);
+      model.set(item_key, content.value);
+      console.log(model);
+    },
     render:function () {
       var context = _.extend({},
           this.default_context,
@@ -16,6 +32,7 @@ $(function() {
           this.extend_context());
 
       $(this.el).html(this.template(context));
+      this.apply_js();
       return this;
     }
   });

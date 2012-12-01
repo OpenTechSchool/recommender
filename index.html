@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/bootstrap-editable.css">
 
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
@@ -94,14 +95,34 @@
 
         <script type="text/template" id="tmpl-book">
 
+        <div id="newBook" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Edit Book" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Edit Book</h3>
+          </div>
+          <div class="modal-body">
+            <form>
+                <
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+
             <!-- Example row of columns -->
             <div class="row">
                 <div class="span3 offset1">
                    <img src="<%= picture_url %>">
                 </div>
                     <div class="span8">
-                        <h2><%= title %></h2>
-                        <p><small><%= author %>, <%= published_date %></small></p>
+                        
+                        <h2 class="js-editable" data-inputclass="span6" data-name="books.title" data-pk="<%= id %>" data-type="text"><%= title %></span></h2>
+                        <p>
+                          <small>
+                            <span class="js-editable" data-name="books.author" data-pk="<%= id %>" data-type="text"><%= author %></span>,
+                            <span class="js-editable" data-name="books.author" data-pk="<%= id %>" data-type="text"><%= published_date %></span></small></p>
                         <p>Tags:
                                 <% _.each(tags, function(tag) { %>
                                     <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
@@ -112,7 +133,7 @@
                                 <% } %>
                         </p>
                     <h4>Book Descsription</h4>
-                    <p><%= desc %>
+                    <p class="js-editable" data-name="books.desc" data-pk="<%= id %>" data-type="textarea" data-inputclass="span8"><%= desc %></p>
                         <a href="">More on amazon.com</a>
                     </p>
                 </div>
@@ -235,6 +256,7 @@
         <script src="js/vendor/underscore-min.js"></script>
         <script src="js/vendor/json2.js"></script>
         <script src="js/vendor/backbone-min.js"></script>
+        <script src="js/vendor/bootstrap-editable-inline.min.js"></script>
         <script src="js/main.js"></script>
 
         <script>

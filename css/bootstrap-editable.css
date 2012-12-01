@@ -103,9 +103,9 @@
     display: inline; 
     vertical-align: middle;
 }
-.editable-click, 
-a.editable-click, 
-a.editable-click:hover {
+/* .editable-click, 
+a.editable-click, */
+.editable-click:hover {
     text-decoration: none;
     border-bottom: dashed 1px #0088cc;
 }
