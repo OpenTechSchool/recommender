@@ -356,6 +356,188 @@ $(function() {
 
   });
 
+
+  var PulLRequestView = Backbone.View.extend({
+    // expected to have the modal-div given
+
+    events: {
+      "click .send-pull-request": "_send_request"
+    },
+
+    template: _.template($('#tmpl-pull-request').html()),
+    thanks_tmpl: _.template('<div class="modal-body"><div class="alert alert-success">'+
+      '<p>Thanks for your submission. We will review your Pull ' +
+      'Request as soon as we can. Until then you can follow the updates ' +
+      '<a href="<%= html_url %>">here</a>.</p></div></div>'),
+    error_tmpl: _.template('<div class="modal-body"><div class="alert alert-error">'+
+      '<p>Sending the Pull-request failed: <strong><%= request.statusText %></strong>:</p>' +
+      '<p><%= request.responseText %></p></div></div>'),
+
+    initialize: function(){
+      this.state = new Backbone.Model({
+        cur_progress: 0, // in percent
+        can_pr: false,
+        "tmp-branch-name": "live-editor-patch", // make this more random?
+        cur_action: ""
+      });
+    },
+
+    start: function() {
+      var app = this.options.app,
+          $el = $(this.el);
+
+      $el.find(".close").hide();
+      $el.find(".content-wrapper").html(this.template());
+      this.render();
+      this.state.on("change", $.proxy(this.render, this));
+      this.state.on("change:cur_progress", function(model, val) {
+        if (val === 80) {
+          $el.find(".progress").removeClass("active").addClass("progress-success");
+          $el.find(".btn").attr("disabled", null).removeClass("disabled");
+        }
+      });
+
+      this._run();
+    },
+
+    _run: function(){
+      // with the help of the awesome prose.io-project: https://github.com/prose/prose/blob/ac77888c4c0b63622172e17bbd0589024d9752c5/_includes/model.js
+      var app = this.options.app,
+          state = this.state,
+          BRANCH = state.get("tmp-branch-name"),
+          user = app.state.get("username"),
+          github = app.state.get("github"),
+          repo = github.getRepo(app.github_username, app.github_repo),
+          forkedRepo = github.getRepo(user, app.github_repo),
+          ref_dfr = $.Deferred(),
+          books_dfr = $.Deferred(),
+          profiles_dfr = $.Deferred(),
+          written_dfr = $.Deferred(),
+          pull_r_dfr = $.Deferred(),
+          done_dfr = $.Deferred(),
+          fork_dfr = $.Deferred();
+      
+      // wait for the fork to be created;
+      function wait_for_fork() {
+        _.delay(function() {
+          forkedRepo.contents("", function(err, contents) {
+            if(contents) {
+              fork_dfr.resolve();
+              return;
+            }
+            wait_for_fork();
+          });
+        }, 500);
+      }
+
+      // creating temporary branch
+      fork_dfr.done(function() {
+        state.set("cur_progress", 20);
+        state.set("cur_action", "fork established");
+        repo.getRef("heads/gh-pages", function(err, commitSha) {
+          // Create temp branch
+          state.set("cur_action", "creating temporary branch");
+          var refSpec = { "ref": "refs/heads/" + BRANCH, "sha": commitSha };
+          forkedRepo.createRef(refSpec, function() {
+              state.set("cur_progress", 30);
+              state.set("cur_action", "temporary branch established");
+              ref_dfr.resolve();
+            });
+        });
+      });
+
+      // write files
+
+      // Stupid enough this has to be done in order..
+      function upload_collection(collection_name) {
+        var collection = app[collection_name],
+            write_def = $.Deferred();
+        state.set("cur_action", "uploading " + collection_name);
+        forkedRepo.write(BRANCH, collection.url,
+          JSON.stringify(collection.toJSON(), null, '  '), "updating " + collection_name, function() {
+            state.set("cur_action", collection_name + " uploaded.");
+            write_def.resolve();
+          });
+        return write_def.promise();
+      }
+
+      ref_dfr.done(function() {
+        state.set("cur_progress", 50);
+        upload_collection("books").then($.proxy(books_dfr.resolve, books_dfr));
+      });
+
+      books_dfr.done(function() {
+        state.set("cur_progress", 60);
+        upload_collection("profiles").then($.proxy(profiles_dfr.resolve, profiles_dfr));
+      });
+
+      // always at last
+      profiles_dfr.done(function() {
+        state.set("cur_progress", 70);
+        upload_collection("recommendations").then(
+            $.proxy(written_dfr.resolve, written_dfr));
+      });
+
+      written_dfr.done(function() {
+        state.set("cur_action", "All ready. Awaiting your input...");
+        state.set("cur_progress", 80);
+      });
+
+      state.set("cur_action", "Forking repository...");
+      state.set("cur_progress", 10);
+      repo.fork(wait_for_fork);
+    },
+
+    _send_request: function() {
+      var $el = $(this.el),
+          me = this;
+          app = this.options.app,
+          state = this.state,
+          BRANCH = this.state.get("tmp-branch-name"),
+          repo = app.state.get("github").getRepo(app.github_username, app.github_repo);
+
+      $el.find("input, textarea, .btn").attr("disabled", "disabled");
+      $el.find(".progress").addClass("active");
+
+      state.set("cur_action", "Sending pull request");
+      state.set("cur_progress", 90);
+        
+          
+      repo.createPullRequest({
+        title: $el.find("#title").val() || "Please merge my changes",
+        body: $el.find("#desc").val() || "Automatically created via the online editor.",
+        base: "gh-pages",
+        head: app.state.get("username") + ":" + BRANCH
+      }, function(err, repo_info) {
+        if (err) {
+          state.set("error", err);
+        } else {
+          state.set("repo_info", repo_info);
+        }
+        me.render();
+      });
+    },
+
+    render: function() {
+      var cur_progress = this.state.get("cur_progress"),
+          repo_info = this.state.get("repo_info"),
+          err = this.state.get("error"),
+          $el = $(this.el);
+      if (err) {
+        console.log("error");
+        $el.find(".content-wrapper").empty().html(this.error_tmpl(err));
+        $el.find(".close").show();
+      } else if (repo_info) {
+        $el.find(".content-wrapper").empty().html(this.thanks_tmpl(repo_info));
+        $el.find(".close").show();
+      } else {
+        $el.find("#message").html(this.state.get("cur_action"));
+        $el.find(".bar").css({"width": cur_progress + "%" });
+      }
+    }
+  });
+
+
   var AppState = Backbone.Model.extend({
     defaults: {
       authenticated: false,
@@ -424,99 +606,10 @@ $(function() {
     },
 
     triggerPullRequest: function() {
-      // with the help of the awesome prose.io-project: https://github.com/prose/prose/blob/ac77888c4c0b63622172e17bbd0589024d9752c5/_includes/model.js
-      var app = this,
-          modal = this.show_modal("Preparing Pull Request", "Please wait"),
-          BRANCH = "live-editor-patch",
-          user = app.state.get("username"),
-          github = app.state.get("github"),
-          repo = github.getRepo(app.github_username, app.github_repo),
-          forkedRepo = github.getRepo(user, app.github_repo),
-          ref_dfr = $.Deferred(),
-          books_dfr = $.Deferred(),
-          profiles_dfr = $.Deferred(),
-          written_dfr = $.Deferred(),
-          pull_r_dfr = $.Deferred(),
-          done_dfr = $.Deferred(),
-          fork_dfr = $.Deferred();
-      
-      // wait for the fork to be created;
-      function wait_for_fork() {
-        _.delay(function() {
-          forkedRepo.contents("", function(err, contents) {
-            if(contents) {
-              fork_dfr.resolve();
-              return;
-            }
-            wait_for_fork();
-          });
-        }, 500);
-      }
-
-      // creating temporary branch
-      fork_dfr.done(function() {
-        console.log("forked");
-        repo.getRef("heads/gh-pages", function(err, commitSha) {
-          // Create temp branch
-          var refSpec = { "ref": "refs/heads/" + BRANCH, "sha": commitSha };
-          forkedRepo.createRef(refSpec, function() {
-              console.log("temp reference created");
-              ref_dfr.resolve();
-            });
-        });
-      });
-
-      // write files
-
-      // Stupid enough this has to be done in order..
-      function upload_collection(collection_name) {
-        var collection = app[collection_name],
-            write_def = $.Deferred();
-        console.log("writing " + collection_name + " to " + collection.url);
-        forkedRepo.write(BRANCH, collection.url,
-          JSON.stringify(collection.toJSON()), "updating " + collection_name, function() {
-            console.log(collection_name + " written");
-            write_def.resolve();
-          });
-        return write_def.promise();
-      }
-
-      ref_dfr.done(function() {
-        upload_collection("books").then($.proxy(books_dfr.resolve, books_dfr));
-      });
-
-      books_dfr.done(function() {
-        upload_collection("profiles").then($.proxy(profiles_dfr.resolve, profiles_dfr));
-      });
-
-      // always at last
-      profiles_dfr.done(function() {
-        upload_collection("recommendations").then(
-            $.proxy(written_dfr.resolve, written_dfr));
-      });
-
-      written_dfr.done(function () {
-        console.log("preparing pull request");
-          repo.createPullRequest({
-            title: "Please merge my latest changes",
-            body: "Automatically created via the online editor.",
-            base: "gh-pages",
-            head: user + ":" + BRANCH
-          }, function(repo_info) {
-            pull_r_dfr.resolve(repo_info);
-          });
-      });
-
-      /*pull_r_dfr.done(function() {
-        forkedRepo.deleteRef('heads/' + BRANCH, $.proxy(done_dfr.resolve, done_dfr));
-      });*/
-
-      repo.fork(wait_for_fork);
-
-      pull_r_dfr.done(function(repo_info) {
-        console.log(repo_info);
-        modal.modal("hide");
-      });
+      var modal = this.show_modal("Preparing Pull Request", "Please wait"),
+          view = new PulLRequestView({el: modal, app: this});
+          view.start();
+      return;
     },
 
     show_modal: function(title, content) {

@@ -46,6 +46,27 @@
             </div>
         </script>
 
+        <script type="text/template" id="tmpl-pull-request">
+          <div class="modal-body">
+
+            <p><small><strong>Currently:</strong> <span id="message"></span></small></p>
+            <div class="progress progress-striped active">
+              <div class="bar" style="width: 0%"></div>
+            </div>
+            <fieldset>
+              <label>Title<label>
+              <input type="text" id="title" placeholder="Short title">
+              <label>Description<label>
+              <textarea class="span4" id="desc" rows="5"></textarea>
+              <span class="help-block">Please explain what you did and give some context if needed.</span>
+            </fieldset>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn disabled" data-dismiss="modal" disabled="disabled">Close</a>
+            <a href="#" class="btn btn-primary disabled send-pull-request" disabled="disabled">Send Pull Request</a>
+          </div>
+        </script>
+
         <script type="text/template" id="tmpl-book-item">
 
             <!-- Example row of columns -->
