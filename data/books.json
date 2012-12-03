@@ -1,36 +1,44 @@
 [
-    {
+  {
     "id": "learning-python",
-    "title": "Learning Python",
+    "title": "Learning Python test",
     "picture_url": "http://bks7.books.google.de/books?id=dqaSZwEACAAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE723mKvrZLe22BLCMYKcS3vo4-zxP3CAStk_xc2TLzhAcjQ9bY5QQ33975LC9YeqoFamxVQz4s96LCYJ_kpzr87mo3Az6f44D0OBm9Y9Mzb3E7UVa4DUFE05bo-NlibmutSHGw6L",
     "author": "Mark Lutz",
     "published_date": "1999",
     "level": "beginners",
-    "tags": ["programming", "python"],
+    "tags": [
+      "programming",
+      "python"
+    ],
     "desc": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python."
-    },
-
-	{
-	"id": "rework",
-	"title": "Rework",
-	"picture_url": "http://37signals.com/images/front-cover.png",
+  },
+  {
+    "id": "rework",
+    "title": "Rework",
+    "picture_url": "http://37signals.com/images/front-cover.png",
     "author": "Jason Fried & David Heinemeier Hansson",
     "published_date": "2010",
     "level": "beginners",
-    "tags": ["startup", "culture"],
+    "tags": [
+      "startup",
+      "culture"
+    ],
     "desc": "Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf."
-	},
-
+  },
   {
     "id": "just-for-fun",
     "title": "Just for fun",
     "picture_url": "http://bks9.books.google.de/books?id=--K-DvEj7yAC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE70-x_lnPSGTDC7rHMwxz-iA7uMUiEcni7UZdHuev9A25UZXc2gLRgN0a2HAphK8XXYCi5i0kJo-6JdOxhfXx_sdQOLfT_ZoBxmb9UQx-8W5vgoU_iNhaU6mReLs5-13neEtL4FM",
     "author": "Linus Torvalds, David Diamond",
     "published_date": "2002",
-    "tags": ["hacking", "culture", "opensource", "retrospection"],
+    "tags": [
+      "hacking",
+      "culture",
+      "opensource",
+      "retrospection"
+    ],
     "desc": "Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf."
   },
-
   {
     "id": "programming-erlang",
     "title": "Programming Erlang",
@@ -38,10 +46,14 @@
     "author": "Joe Armstrong",
     "published_date": "2007",
     "level": "advanced",
-    "tags": ["programming", "erlang", "compendium", "retrospection"],
+    "tags": [
+      "programming",
+      "erlang",
+      "compendium",
+      "retrospection"
+    ],
     "desc": "Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf."
   },
-
   {
     "id": "javascript-the-good-parts",
     "title": "Javascript: The Good Parts",
@@ -49,9 +61,12 @@
     "author": "Douglas Crockford",
     "published_date": "2008",
     "level": "intermediate",
-    "tags": ["programming", "javascript", "compendium"],
+    "tags": [
+      "programming",
+      "javascript",
+      "compendium"
+    ],
     "desc": "Most business books give you the same old advice: Write a business plan, study the competition, seek investors, yadda yadda. If you`re looking for a book like that, put this one back on the shelf.",
     "free_read_link": "http://books.google.de/books?id=PXa2bby0oQ0C&printsec=frontcover#v=onepage&q&f=false"
   }
-
 ]

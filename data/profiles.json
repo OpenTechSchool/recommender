@@ -1,22 +1,21 @@
 [
-    {
+  {
     "id": "keimlink",
     "nick": "Markus",
     "name": "Markus Zapke-Gründemann",
     "picture_url": "https://secure.gravatar.com/avatar/16ae0a49ce39c086a67090ad54fbf67f?s=420&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
     "tagline": "Python Coach, Expert in Django and Science",
     "about": "Hi, I`m Markus. You rock."
-    },
-	{
-	"id": "ben",
-	"nick": "Ben",
-	"name": "Benjamin Kampmann",
-	"picture_url": "https://github.com/OpenTechSchool/www2.opentechschool.org/blob/master/images/team/Ben.jpg?raw=true",
+  },
+  {
+    "id": "ben",
+    "nick": "Ben",
+    "name": "Benjamin Kampmann",
+    "picture_url": "https://github.com/OpenTechSchool/www2.opentechschool.org/blob/master/images/team/Ben.jpg?raw=true",
     "tagline": "OTS Core Member, Python and Javascript Developer",
     "about": "Hi, I`m Ben. I am a Member of the Core Team of OpenTechSchool in Berlin and work on strategic and administrative stuff. Originally I am a self learnt Software Developer, mostly doing Python and Javascript for my Startup lately."
-	},
-
-    {
+  },
+  {
     "id": "bea",
     "nick": "Bea",
     "name": "Beatrice Martini",
@@ -24,5 +23,4 @@
     "tagline": "OTS Core Member, Project Manager",
     "about": "Hi, I`m Bea, I do rock the boat."
   }
-
 ]
