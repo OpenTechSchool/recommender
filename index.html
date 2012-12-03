@@ -236,7 +236,16 @@
                 <li class="divider"></li>
                 <li class="nav-header">Project</li>
                   <li><a class="toggle-edit" href="#"><i class="icon-edit"></i> Toggle Edit-Mode</a></li>
-                  <li><a href="#save/changes"><i class="icon-envelope"></i> Prepare Pull-Request</a></li>
+                  <% if (state.dirty) { %>
+                    <li>
+                      <a href="#" class="prepare-pull-request">
+                        <i class="icon-envelope"></i> Prepare Pull-Request</a>
+                    </li>
+                  <% } else { %> 
+                    <li class="disabled">
+                        <a title="No changes to prepare yet"><i class="icon-envelope"></i> Prepare Pull-Request</a>
+                    </li>
+                  <% } %>
               </ul>
             <% } %>
           </li>

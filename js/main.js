@@ -354,6 +354,7 @@ $(function() {
   var AppState = Backbone.Model.extend({
     defaults: {
       authenticated: false,
+      dirty: false,
       edit_mode: false
     }
   });
@@ -376,8 +377,9 @@ $(function() {
       var splitted = content.name.split(".", 2),
           collection_name = splitted[0],
           item_key = splitted[1],
-          model = this.app[collection_name].get(content.pk);
+          model = this[collection_name].get(content.pk);
       model.set(item_key, content.value);
+      this.state.set("dirty", true);
     },
 
     initialize: function() {
@@ -401,7 +403,7 @@ $(function() {
         mainNavView.select(target);
         if (app.state.get("edit_mode")){
           $(app.el).find(".js-editable").editable({
-            url: $.proxy(this._submit_editable)
+            url: $.proxy(this._submit_editable, this)
           });
         }
       });
