@@ -299,7 +299,8 @@ $(function() {
     template: _.template($('#tmpl-login-bar').html()),
 
     events : {
-      "submit form": "login_submit"
+      "submit form": "login_submit",
+      "click .toggle-edit": "toggleEdit"
     },
 
     initialize: function() {
@@ -309,6 +310,11 @@ $(function() {
     render_login_bar: function() {
       $(this.el).find("#login-bar").html(
           this.template({state: this.options.app.state.toJSON()}));
+    },
+
+    toggleEdit: function(){
+      this.options.app.state.set("edit-mode", !this.options.app.state.get("edit-mode"));
+      return false;
     },
 
     login_submit: function() {
