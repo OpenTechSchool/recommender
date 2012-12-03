@@ -377,7 +377,7 @@ $(function() {
       this.state = new Backbone.Model({
         cur_progress: 0, // in percent
         can_pr: false,
-        "tmp-branch-name": "live-editor-patch", // make this more random?
+        "tmp-branch-name": "live-editor-patch-" + (new Date()).getTime(),
         cur_action: ""
       });
     },
