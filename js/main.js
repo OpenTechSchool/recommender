@@ -463,17 +463,23 @@ $(function() {
 
       ref_dfr.done(function() {
         state.set("cur_progress", 50);
+        if (!app.books.dirty) return books_dfr.resolve(); // no changes here
+        
         upload_collection("books").then($.proxy(books_dfr.resolve, books_dfr));
       });
 
       books_dfr.done(function() {
         state.set("cur_progress", 60);
+        if (!app.profiles.dirty) return profiles_dfr.resolve(); // no changes here
+
         upload_collection("profiles").then($.proxy(profiles_dfr.resolve, profiles_dfr));
       });
 
       // always at last
       profiles_dfr.done(function() {
         state.set("cur_progress", 70);
+        if (!app.recommendations.dirty) return written_dfr.resolve(); // no changes here
+
         upload_collection("recommendations").then(
             $.proxy(written_dfr.resolve, written_dfr));
       });
@@ -567,7 +573,9 @@ $(function() {
       var splitted = content.name.split(".", 2),
           collection_name = splitted[0],
           item_key = splitted[1],
-          model = this[collection_name].get(content.pk);
+          collection  = this[collection_name],
+          model = collection.get(content.pk);
+      collection.dirty = true;
       model.set(item_key, content.value);
       this.state.set("dirty", true);
     },
