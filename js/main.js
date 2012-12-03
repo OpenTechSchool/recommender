@@ -300,7 +300,8 @@ $(function() {
 
     events : {
       "submit form": "login_submit",
-      "click .toggle-edit": "toggleEdit"
+      "click .toggle-edit": "toggleEdit",
+      "click .prepare-pull-request": "triggerPullRequest"
     },
 
     initialize: function() {
@@ -317,6 +318,10 @@ $(function() {
       return false;
     },
 
+    triggerPullRequest: function() {
+      this.options.app.triggerPullRequest();
+    },
+
     login_submit: function() {
       var me = this,
           username = $(this.el).find("#username").val(),
@@ -325,7 +330,7 @@ $(function() {
             password: $(this.el).find("#password").val(),
             auth: "basic"
           }),
-          repo = github.getRepo("ligthyear", "recommender");
+          repo = github.getRepo(this.options.app.github_username, this.options.app.github_repo);
 
       repo.show(function(err, repo) {
         if (err && err.error) {
@@ -373,6 +378,9 @@ $(function() {
 
     el: $("body"),
 
+    github_username: "ligthyear",
+    github_repo: "recommender",
+
     _submit_editable: function(content){
       var splitted = content.name.split(".", 2),
           collection_name = splitted[0],
@@ -413,6 +421,111 @@ $(function() {
         }
       };
 
+    },
+
+    triggerPullRequest: function() {
+      // with the help of the awesome prose.io-project: https://github.com/prose/prose/blob/ac77888c4c0b63622172e17bbd0589024d9752c5/_includes/model.js
+      var app = this,
+          modal = this.show_modal("Preparing Pull Request", "Please wait"),
+          BRANCH = "live-editor-patch",
+          user = app.state.get("username"),
+          github = app.state.get("github"),
+          repo = github.getRepo(app.github_username, app.github_repo),
+          forkedRepo = github.getRepo(user, app.github_repo),
+          ref_dfr = $.Deferred(),
+          books_dfr = $.Deferred(),
+          profiles_dfr = $.Deferred(),
+          written_dfr = $.Deferred(),
+          pull_r_dfr = $.Deferred(),
+          done_dfr = $.Deferred(),
+          fork_dfr = $.Deferred();
+      
+      // wait for the fork to be created;
+      function wait_for_fork() {
+        _.delay(function() {
+          forkedRepo.contents("", function(err, contents) {
+            if(contents) {
+              fork_dfr.resolve();
+              return;
+            }
+            wait_for_fork();
+          });
+        }, 500);
+      }
+
+      // creating temporary branch
+      fork_dfr.done(function() {
+        console.log("forked");
+        repo.getRef("heads/gh-pages", function(err, commitSha) {
+          // Create temp branch
+          var refSpec = { "ref": "refs/heads/" + BRANCH, "sha": commitSha };
+          forkedRepo.createRef(refSpec, function() {
+              console.log("temp reference created");
+              ref_dfr.resolve();
+            });
+        });
+      });
+
+      // write files
+
+      // Stupid enough this has to be done in order..
+      function upload_collection(collection_name) {
+        var collection = app[collection_name],
+            write_def = $.Deferred();
+        console.log("writing " + collection_name + " to " + collection.url);
+        forkedRepo.write(BRANCH, collection.url,
+          JSON.stringify(collection.toJSON()), "updating " + collection_name, function() {
+            console.log(collection_name + " written");
+            write_def.resolve();
+          });
+        return write_def.promise();
+      }
+
+      ref_dfr.done(function() {
+        upload_collection("books").then($.proxy(books_dfr.resolve, books_dfr));
+      });
+
+      books_dfr.done(function() {
+        upload_collection("profiles").then($.proxy(profiles_dfr.resolve, profiles_dfr));
+      });
+
+      // always at last
+      profiles_dfr.done(function() {
+        upload_collection("recommendations").then(
+            $.proxy(written_dfr.resolve, written_dfr));
+      });
+
+      written_dfr.done(function () {
+        console.log("preparing pull request");
+          repo.createPullRequest({
+            title: "Please merge my latest changes",
+            body: "Automatically created via the online editor.",
+            base: "gh-pages",
+            head: user + ":" + BRANCH
+          }, function(repo_info) {
+            pull_r_dfr.resolve(repo_info);
+          });
+      });
+
+      /*pull_r_dfr.done(function() {
+        forkedRepo.deleteRef('heads/' + BRANCH, $.proxy(done_dfr.resolve, done_dfr));
+      });*/
+
+      repo.fork(wait_for_fork);
+
+      pull_r_dfr.done(function(repo_info) {
+        console.log(repo_info);
+        modal.modal("hide");
+      });
+    },
+
+    show_modal: function(title, content) {
+      var $el = $(this.el).find("#generalModal");
+      $el.find(".close").show();
+      $el.find(".modal-header h3").html(title);
+      $el.find(".content-wrapper").html(content);
+      $el.modal('show');
+      return $el;
     },
 
     _update_loading_progress: function(additional) {
