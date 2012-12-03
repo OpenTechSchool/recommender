@@ -54,7 +54,7 @@
                     <img src="<%= book.picture_url %>">
                 </div>
                 <div class="span8">
-                    <h2><%= book.title %></h2>
+                    <a href="#books/<%= book.id %>"><h2><%= book.title %></h2></a>
                     <p><small><%= book.author %>, <%= book.published_date %></small></p>
                     <blockquote>
                         <p><%= rcd.says %> <a href="#books/<%= book.id %>">read more recommendations</a></p>
@@ -132,7 +132,7 @@
                                     <br> Level: <a href="#search/books/level:<%= level %>"><span class="badge badge-important"><%= level %></span></a>
                                 <% } %>
                         </p>
-                    <h4>Book Descsription</h4>
+                    <h4>Book Description</h4>
                     <p class="js-editable" data-name="books.desc" data-pk="<%= id %>" data-type="textarea" data-inputclass="span8"><%= desc %></p>
                         <a href="">More on amazon.com</a>
                     </p>
@@ -184,7 +184,7 @@
                         <img src="<%= rcd.book.picture_url %>">
                     </div>
                     <div class="span8">
-                        <h2><%= rcd.book.title %></h2>
+                        <a href="#books/<%= rcd.book.id %>"><h2><%= rcd.book.title %></h2></a>
                         <p><small><%= rcd.book.author %>, <%= rcd.book.published_date %></small></p>
                         <blockquote>
                             <p><%= rcd.says %> <a href="#books/<%= rcd.book.id %>">read more recommendations</a></p>
@@ -292,7 +292,6 @@
         <script src="js/vendor/json2.js"></script>
         <script src="js/vendor/backbone-min.js"></script>
         <script src="js/vendor/base64.js"></script>
-        <script src="js/vendor/jquery.cookie.js"></script>
         <script src="js/vendor/github.js"></script>
         <script src="js/vendor/bootstrap-editable-inline.min.js"></script>
         <script src="js/main.js"></script>
