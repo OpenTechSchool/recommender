@@ -407,6 +407,11 @@ $(function() {
           });
         }
       });
+      window.onbeforeunload = function() {
+        if (app.state.get("dirty")) {
+          return "You have unpublished changes. Sure you want to leave the page without submitting them as a pull-request?";
+        }
+      };
 
     },
 
