@@ -357,7 +357,7 @@ $(function() {
   });
 
 
-  var PulLRequestView = Backbone.View.extend({
+  var PullRequestView = Backbone.View.extend({
     // expected to have the modal-div given
 
     events: {
@@ -566,7 +566,7 @@ $(function() {
 
     el: $("body"),
 
-    github_username: "ligthyear",
+    github_username: "ligthyear", // FIXME: needs to be changed, if published
     github_repo: "recommender",
 
     _submit_editable: function(content){
@@ -615,7 +615,7 @@ $(function() {
 
     triggerPullRequest: function() {
       var modal = this.show_modal("Preparing Pull Request", "Please wait"),
-          view = new PulLRequestView({el: modal, app: this});
+          view = new PullRequestView({el: modal, app: this});
           view.start();
       return;
     },
