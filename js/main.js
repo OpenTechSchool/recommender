@@ -361,46 +361,74 @@ $(function() {
 
   });
 
-  var AddItemView = Backbone.View.extend({
-
-    templates: {
-      "book": _.template($('#tmpl-add-book').html()),
-      "profile": "profile",
-      "recommendation": "recommendation"
-    },
+  var AddItemBaseView = Backbone.View.extend({
 
     events: {
       "submit form": "submit_form"
     },
 
-    render: function (modal_type) {
-      $(this.el).html(this.templates[modal_type]());
-      console.log(this.el);
+    render: function () {
+      $(this.el).html(this.template({ app:this.options.app }));
       return this.el;
     },
 
+    extend_data: function(inp) {
+      return inp;
+    },
+
+    navi: function(model) {
+      return this.collection_name + "/" + model.get("id");
+    },
+
     submit_form: function(ev) {
-      console.log(ev);
-      var $form = $(ev.currentTarget);
-      var collection_name = $form.data("model");
-      var serialized = {};
-      $form.find("input").each(function(idx, itm) {
+      var $form = $(ev.currentTarget),
+          collection = this.options.app[this.collection_name],
+          serialized = {};
+
+      $form.find("select, input, textarea").each(function(idx, itm) {
         serialized[$(itm).attr("name")] = $(itm).val() || null;
       });
+      var model = new collection.model(this.extend_data(serialized));
       //console.log(serialized);
       // FIXME: we should check at least the ID before comitting it
-      var collection = this.options.app[collection_name];
+      
       // we always add the new model at the front.
-      collection.unshift(new collection.model(serialized));
+      collection.unshift(model);
       collection.dirty = true;
       this.options.app.state.set("dirty", true);
 
       this.options.app.close_modal();
-
-      this.options.app.navigate("books/" + serialized.id);
+      this.options.app.navigate(this.navi(model), true);
 
       return false;
 
+    }
+  });
+
+
+  var AddProfileView = AddItemBaseView.extend({
+    template: _.template($('#tmpl-add-profile').html()),
+    collection_name: "profiles"
+  });
+      
+
+  var AddBookView = AddItemBaseView.extend({
+    template: _.template($('#tmpl-add-book').html()),
+    collection_name: "books"
+  });
+
+  var AddRecommendationView = AddItemBaseView.extend({
+    template :_.template($('#tmpl-add-recommendation').html()),
+    collection_name: "recommendations",
+
+    navi: function(model) {
+      return "books/" + model.get("item_id");
+    },
+
+    extend_data: function(inp) {
+      inp["id"] = inp["by"] + "." + inp["item_id"];
+      inp["type"] = "book";
+      return inp;
     }
   });
 
@@ -642,8 +670,6 @@ $(function() {
       app.search = new SearchFormView({el: $('#search-form'), app: app});
       app.mainNavView = mainNavView = new MainNavView({el: $('#navbar'), app: app});
 
-      app.addView = new AddItemView({app: app});
-
       mainNavView.render_login_bar();
 
       app.progress = 10;
@@ -690,8 +716,13 @@ $(function() {
     },
 
     add_item: function(model_type) {
+      var view = new {
+        "book": AddBookView,
+        "recommendation": AddRecommendationView
+      }[model_type]({app: this});
+
       var $el = this.show_modal("Add a new " + model_type.toUpperCase());
-      $el.find(".content-wrapper").html(this.addView.render(model_type));
+      $el.find(".content-wrapper").html(view.render());
     },
 
     start: function() {

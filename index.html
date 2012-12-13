@@ -228,6 +228,35 @@
             </div>
         </script>
 
+        <script type="text/template" id="tmpl-add-recommendation">
+            <form class="form-horizontal">
+              <div class="modal-body">
+                By <select id="user" name="by" rel="tooltip" title="Select the User">
+
+                    <% app.profiles.models.forEach(function (profile) { %>
+                      <option value="<%= profile.get('id') %>"><%= profile.get("name") %></option>
+                    <% }); %>
+                    </select>
+                    on 
+                    <select id="book" name="item_id" rel="tooltip" title="Select the User">
+
+                    <% app.books.models.forEach(function (book) { %>
+                      <option value="<%= book.get('id') %>"><%= book.get("title") %></option>
+                    <% }); %>
+                    </select>
+                    <br />
+                    <br />
+                    <textarea name="says"></textarea>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary" type="submit">Add</button>
+              </div>
+          </form>
+        </script>
+
+        <script type="text/template" id="tmpl-add-profile">
+        </script>
+
         <script type="text/template" id="tmpl-add-book">
 
           <form class="form-horizontal" data-model="books">
