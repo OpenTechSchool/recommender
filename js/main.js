@@ -40,6 +40,11 @@ $(function() {
 
   });
   var Book = Backbone.Model.extend({
+    defaults: {
+      tags: [],
+      desc: ""
+    },
+
     getRecommendationCount: function() {
         var app = this.collection.app;
         return app.recommendations.where({"item_id": this.id}).length;
@@ -356,6 +361,49 @@ $(function() {
 
   });
 
+  var AddItemView = Backbone.View.extend({
+
+    templates: {
+      "book": _.template($('#tmpl-add-book').html()),
+      "profile": "profile",
+      "recommendation": "recommendation"
+    },
+
+    events: {
+      "submit form": "submit_form"
+    },
+
+    render: function (modal_type) {
+      $(this.el).html(this.templates[modal_type]());
+      console.log(this.el);
+      return this.el;
+    },
+
+    submit_form: function(ev) {
+      console.log(ev);
+      var $form = $(ev.currentTarget);
+      var collection_name = $form.data("model");
+      var serialized = {};
+      $form.find("input").each(function(idx, itm) {
+        serialized[$(itm).attr("name")] = $(itm).val() || null;
+      });
+      //console.log(serialized);
+      // FIXME: we should check at least the ID before comitting it
+      var collection = this.options.app[collection_name];
+      // we always add the new model at the front.
+      collection.unshift(new collection.model(serialized));
+      collection.dirty = true;
+      this.options.app.state.set("dirty", true);
+
+      this.options.app.close_modal();
+
+      this.options.app.navigate("books/" + serialized.id);
+
+      return false;
+
+    }
+  });
+
 
   var PullRequestView = Backbone.View.extend({
     // expected to have the modal-div given
@@ -561,6 +609,7 @@ $(function() {
         "books/by/:user": "books_by",
         "books/:book": "book",
         "search/books/:params": "books",
+        "add/:type": "add_item",
         "books/": "books"
     },
 
@@ -592,6 +641,8 @@ $(function() {
       app.main = $('#main');
       app.search = new SearchFormView({el: $('#search-form'), app: app});
       app.mainNavView = mainNavView = new MainNavView({el: $('#navbar'), app: app});
+
+      app.addView = new AddItemView({app: app});
 
       mainNavView.render_login_bar();
 
@@ -629,9 +680,18 @@ $(function() {
       return $el;
     },
 
+    close_modal: function() {
+      $(this.el).find("#generalModal").modal("hide");
+    },
+
     _update_loading_progress: function(additional) {
       this.progress += additional;
       this.main.find("#progress-bar").css({"width": this.progress + "%"});
+    },
+
+    add_item: function(model_type) {
+      var $el = this.show_modal("Add a new " + model_type.toUpperCase());
+      $el.find(".content-wrapper").html(this.addView.render(model_type));
     },
 
     start: function() {

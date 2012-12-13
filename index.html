@@ -228,6 +228,60 @@
             </div>
         </script>
 
+        <script type="text/template" id="tmpl-add-book">
+
+          <form class="form-horizontal" data-model="books">
+              <div class="modal-body">
+                
+                <div class="control-group">
+                  <label class="control-label" for="title">Book Title</label>
+                  <div class="controls">
+                    <input type="text" class="input" required="required" id="title" name="title" rel="tooltip" title="Please enter the title of the book here" placeholder="Programming 101">
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <label class="control-label" for="book-id">Book id</label>
+                  <div class="controls">
+                    <input type="text" class="input" required="required" id="book-id" pattern="[A-Za-z0-9\-_]*"  name="id" rel="tooltip" title="A unique Book ID, no spaces allowed" placeholder="programming-101">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="author">Author(s) Name</label>
+                  <div class="controls">
+                    <input type="text" class="input" required="required" id="author" name="author" rel="tooltip" title="The name of the Authors, separated by a comma" placeholder="Name, Hans-Peter, Yes-Men">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="published_date">Published Year</label>
+                  <div class="controls">
+                    <input type="text" class="input" required="required" id="published_date" name="published_date" rel="tooltip" title="The year this book was published" placeholder="e.g. 1999">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="picture_url">Cover URL</label>
+                  <div class="controls">
+                    <input type="url" pattern="https?://.+" class="input" required="required" id="picture_url" name="picture_url" rel="tooltip" title="URL to the cover" placeholder="http://example.com/cover.jpg">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="level">Experience Level:</label>
+                  <div class="controls">
+                    <select id="level" name="level" rel="tooltip" title="Dogs are best!">
+                      <option value="">(unselected)</option>
+                      <option value="beginners">Beginners</option>
+                      <option value="intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary" type="submit">Add</button>
+              </div>
+          </form>
+        </script>
+
         <script type="text/template" id="tmpl-login-bar">
           <li class="divider-vertical"></li>
           <li class="dropdown">
