@@ -143,17 +143,8 @@ $(function() {
       "click .nav li a": "select_menu"
     },
 
-    update_items: function() {
-      var $el = $(this.el),
-          $target = $el.find("#item-list").html("Loading...");
-          app = this.options.app,
-          view = this,
-          rendered = [];
-
-      $el.find(".nav li").removeClass("active");
-      $el.find("#sub-menu-" + this.sub_menu).addClass("active");
-
-      var item_listing = app[this.type + "s"].models;
+    _search_items: function(models, $target, template) {
+      var item_listing = models;
       if (this.query) {
         var query = [],
             level = "",
@@ -223,7 +214,7 @@ $(function() {
             // no recommendation found
             return;
           }
-          $target.append(view.itemTemplate({
+          $target.append(template({
             item: item.toJSON(),
             rcd: rcm.toJSON(),
             user: rcm.getUser().toJSON()
@@ -240,7 +231,7 @@ $(function() {
           });
         }
         _.each(_.first(recommendations, this.item_count), function(rcm) {
-          $target.append(view.itemTemplate({
+          $target.append(template({
             item: rcm.getItem().toJSON(),
             rcd: rcm.toJSON(),
             user: rcm.getUser().toJSON()
@@ -258,7 +249,7 @@ $(function() {
             // no recommendation found
             return;
           }
-          $target.append(view.itemTemplate({
+          $target.append(template({
             item: item.toJSON(),
             rcd: rcm.toJSON(),
             user: rcm.getUser().toJSON()
@@ -271,6 +262,21 @@ $(function() {
           '<strong>Empty Set</strong>. We are not able to find any matches.' +
           '</div>');
       }
+
+    },
+
+    update_items: function() {
+      var $el = $(this.el),
+          $target = $el.find("#item-list").html("Loading..."),
+          app = this.options.app,
+          view = this,
+          rendered = [];
+
+      $el.find(".nav li").removeClass("active");
+      $el.find("#sub-menu-" + this.sub_menu).addClass("active");
+
+      this._search_items(app[this.type + "s"].models, $target, this.itemTemplate);
+
     },
 
     select_menu: function(ev) {
@@ -290,6 +296,34 @@ $(function() {
       this.update_items();
       return this;
     }
+  });
+
+  var HomeSearchView = ListingBaseView.extend({
+    item_count: 3,
+    template: _.template($('#tmpl-home-search').html()),
+    itemTemplates: {
+      "book": _.template($('#tmpl-book-item').html()),
+      "video": _.template($('#tmpl-video-item').html()),
+      "cours": _.template($('#tmpl-book-item').html()) // FIXME: add courses
+    },
+
+    update_items: function() {
+      var $el = $(this.el),
+          app = this.options.app,
+          view = this,
+          rendered = [];
+
+      $el.find(".nav li").removeClass("active");
+      $el.find("#sub-menu-" + this.sub_menu).addClass("active");
+
+      _.forEach(["book", "video"/*, "course"*/], function(model) {
+        view._search_items(app[model + "s"].models,
+            $el.find("#item-list-" + model).html("Loading..."),
+            view.itemTemplates[model]);
+
+      });
+    }
+
   });
 
 
@@ -705,7 +739,6 @@ $(function() {
   var Router = Backbone.Router.extend({
 
     routes: {
-        "": "home",
         // Books
         "books/by/:user": "books_by",
         "books/:book": "book",
@@ -721,7 +754,11 @@ $(function() {
 
         // indizes
         "videos/": "videos",
-        "books/": "books"
+        "books/": "books",
+
+        // home
+        "": "home",
+        "search/home/:params": "home_search"
     },
 
     el: $("body"),
@@ -904,6 +941,7 @@ $(function() {
         this.trigger("pageLoaded", "books");
     },
 
+
     home: function () {
         // Since the home view never changes, we instantiate it and render it only once
         if (!this.homeView) {
@@ -914,6 +952,19 @@ $(function() {
         }
         this.main.html(this.homeView.el);
         this.trigger("pageLoaded", "home");
+    },
+
+    home_search: function (params) {
+      if (!this.homeSearchView) {
+          this.homeSearchView = new HomeSearchView({app: this});
+          this.homeSearchView.render();
+      } else {
+          this.homeSearchView.delegateEvents(); // delegate events when the view is recycled
+      }
+      this.search.set_query(params);
+      this.homeSearchView.set_query(_.isString(params)? params.toLowerCase(): params);
+      this.main.html(this.homeSearchView.el);
+      this.trigger("pageLoaded", "home");
     }
 
   });
