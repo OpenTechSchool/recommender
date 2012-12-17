@@ -85,7 +85,7 @@
                 <a href="#videos/<%= item.id %>"><h2><%= item.title %></h2></a>
                 <p>
                     <% if (item.category) { %>
-                        <a href="#search/videos/category:<%= item.category %>"><span class="badge badge-important"><%= item.category %></span></a>&nbsp;
+                        <a href="#search/videos/category:<%= item.category %>"><span class="badge badge-info"><%= item.category %></span></a>&nbsp;
                     <% } %>
                     <small><%= item.author %>, <%= item.published_date %></small></p>
                 <p>
@@ -142,7 +142,7 @@
                 <p>
                   <small>
                     <% if (category) { %>
-                      <a href="#search/videos/category:<%= category %>"><span class="badge badge-important"><%= category %></span></a>&nbsp;
+                      <a href="#search/videos/category:<%= category %>"><span class="badge badge-info"><%= category %></span></a>&nbsp;
                     <% } %>
                     <span class="js-editable" data-name="videos.author" data-pk="<%= id %>" data-type="text"><%= author %></span>,
                     <span class="js-editable" data-name="videos.author" data-pk="<%= id %>" data-type="text"><%= published_date %></span>
@@ -207,7 +207,7 @@
                 <a href="#videos/<%= rcd.item.id %>"><h2><%= rcd.item.title %></h2></a>
                 <p><small>
                     <% if (rcd.item.category) { %>
-                        <a href="#search/videos/category:<%= rcd.item.category %>"><span class="badge badge-important"><%= rcd.item.category %></span></a>&nbsp;
+                        <a href="#search/videos/category:<%= rcd.item.category %>"><span class="badge badge-info"><%= rcd.item.category %></span></a>&nbsp;
                     <% } %>
                     <%= rcd.item.author %>, <%= rcd.item.published_date %></small></p>
                 <p>
@@ -260,7 +260,7 @@
                                 <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
                             <% }); %>
                             <% if (item.level) { %>
-                                <a href="#search/books/level:<%= item.level %>"><span class="badge badge-important"><%= item.level %></span></a>
+                                <a href="#search/books/level:<%= item.level %>"><span class="badge badge-info"><%= item.level %></span></a>
                             <% } %>
                         </small>
                     </p>
@@ -305,7 +305,7 @@
                               <% }); %>
 
                               <% if (level) { %>
-                                  <br> Level: <a href="#search/books/level:<%= level %>"><span class="badge badge-important"><%= level %></span></a>
+                                  <br> Level: <a href="#search/books/level:<%= level %>"><span class="badge badge-info"><%= level %></span></a>
                               <% } %>
                       </p>
                   <h4>Book Description</h4>
@@ -369,7 +369,7 @@
                                   <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
                               <% }); %>
                               <% if (rcd.item.level) { %>
-                                  <a href="#search/books/level:<%= rcd.item.level %>"><span class="badge badge-important"><%= rcd.item.level %></span></a>
+                                  <a href="#search/books/level:<%= rcd.item.level %>"><span class="badge badge-info"><%= rcd.item.level %></span></a>
                               <% } %>
                           </small>
                       </p>
