@@ -39,12 +39,8 @@ $(function() {
     }
 
   });
-  var Book = Backbone.Model.extend({
-    defaults: {
-      tags: [],
-      desc: ""
-    },
 
+  var RecommendableModel = Backbone.Model.extend({
     getRecommendationCount: function() {
         var app = this.collection.app;
         return app.recommendations.where({"item_id": this.id}).length;
@@ -56,9 +52,15 @@ $(function() {
         return item.get("item_id") == my_id;
       });
     }
-
   });
-  var Video = Backbone.Model.extend({
+
+  var Book = RecommendableModel.extend({
+    defaults: {
+      tags: [],
+      desc: ""
+    }
+  });
+  var Video = RecommendableModel.extend({
     defaults: {
       tags: [],
       desc: "",
@@ -73,20 +75,7 @@ $(function() {
           "embed": '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/' + input.youtube_id + '" frameborder="0"> </iframe>'
         });
       }
-    },
-
-    getRecommendationCount: function() {
-        var app = this.collection.app;
-        return app.recommendations.where({"item_id": this.id}).length;
-    },
-    latestRecommendation: function() {
-      var app = this.collection.app,
-          my_id = this.get("id");
-      return app.recommendations.find(function(item){
-        return item.get("item_id") == my_id;
-      });
     }
-
   });
 
   var Recommendation = Backbone.Model.extend({
@@ -94,7 +83,7 @@ $(function() {
         var json = this.toJSON(),
             app = this.collection.app;
         json["user"] = this.getUser().toJSON();
-        json["book"] = this.getBook().toJSON();
+        json["item"] = this.getItem().toJSON();
       return json;
     },
     getUser: function() {
@@ -109,9 +98,6 @@ $(function() {
 
       if (type === "video")
         return this.collection.app.videos.get(item_id);
-    },
-    getBook: function() {
-      return this.getItem();
     }
 
   });
@@ -305,21 +291,6 @@ $(function() {
     collection_name: "videos"
   });
 
-  var BooksByView = TmplView.extend({
-    template: _.template($('#tmpl-books-by').html()),
-
-    extend_context: function() {
-      var app = this.options.app;
-      return {"recommendations": app.recommendations.where({
-          "type": "book",
-          "by": this.model.id
-        }).map(function(item){
-          return item.extendedJSON();
-          })
-      };
-    }
-  });
-
    var ItemBaseView = TmplView.extend({
     extend_context: function() {
       var app = this.options.app;
@@ -333,17 +304,42 @@ $(function() {
     }
   });
 
+  var RecommedationsByView = TmplView.extend({
+    extend_context: function() {
+      var app = this.options.app;
+      return {"recommendations": app.recommendations.where({
+          "type": this.type,
+          "by": this.model.id
+        }).map(function(item){
+          return item.extendedJSON();
+          })
+      };
+    }
+  });
+
   var BookView = ItemBaseView.extend({
      default_context: {"level": null},
      template: _.template($('#tmpl-book').html()),
      type: "book"
    });
 
+  var BooksByView = RecommedationsByView.extend({
+    template: _.template($('#tmpl-books-by').html()),
+     type: "book"
+  });
+
+  // Videos
   var VideoView = ItemBaseView.extend({
      default_context: {"category": null, "embed": null, "item_url": null},
      template: _.template($('#tmpl-video').html()),
      type: "video"
    });
+
+
+  var VideosByView = RecommedationsByView.extend({
+    template: _.template($('#tmpl-videos-by').html()),
+    type: "video"
+  });
 
   var SearchFormView = Backbone.View.extend({
     events: {
@@ -870,7 +866,7 @@ $(function() {
 
     videos_by: function (user) {
         if (!this.videosByView) {
-            this.videosByView = new videosByView({app: this});
+            this.videosByView = new VideosByView({app: this});
         } else {
             this.videosByView.delegateEvents(); // delegate events when the view is recycled
         }

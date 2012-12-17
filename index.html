@@ -66,76 +66,35 @@
             <a href="#" class="btn btn-primary disabled send-pull-request" disabled="disabled">Send Pull Request</a>
           </div>
         </script>
+          <!-- 
 
-        <script type="text/template" id="tmpl-book-item">
-
-            <!-- Example row of columns -->
-            <div class="row">
-                <div class="span2 offset1">
-                    <img src="<%= item.picture_url %>">
-                </div>
-                <div class="span8">
-                    <a href="#books/<%= item.id %>"><h2><%= item.title %></h2></a>
-                    <p><small><%= item.author %>, <%= item.published_date %></small></p>
-                    <blockquote>
-                        <p><%= rcd.says %> <a href="#books/<%= item.id %>">read more recommendations</a></p>
-                        <small><a href="#books/by/<%= user.id %>"><%= user.name %>, <%= user.tagline %></a></small>
-                        </p>
-                    </blockquote>
-                    <p style="text-align: right">
-                        <small>
-                            <% _.each(item.tags, function(tag) { %>
-                                <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
-                            <% }); %>
-                            <% if (item.level) { %>
-                                <a href="#search/books/level:<%= item.level %>"><span class="badge badge-important"><%= item.level %></span></a>
-                            <% } %>
-                        </small>
-                    </p>
-                </div>
-            </div>
-
-            <br />
-        </script>
-
-        <script type="text/template" id="tmpl-books">
-
-            <div class="row">
-                <div class="offset2 span8">
-                    <ul class="nav nav-pills">
-                        <li id="sub-menu-lb"><a data-menu-item="lb" href="#">latest books</a></li>
-                        <li id="sub-menu-mr" class="active"><a data-menu-item="mr" href="#">most recommended</a></li>
-                        <li id="sub-menu-lr"><a data-menu-item="lr" href="#">latest recommendation</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div id="item-list">
-            </div>
-
-        </script>
-
-
+          VV     VV IIIII DDDDD   EEEEEEE  OOOOO   SSSSS  
+          VV     VV  III  DD  DD  EE      OO   OO SS      
+           VV   VV   III  DD   DD EEEEE   OO   OO  SSSSS  
+            VV VV    III  DD   DD EE      OO   OO      SS 
+             VVV    IIIII DDDDDD  EEEEEEE  OOOO0   SSSSS  
+                                                          
+          -->
         <script type="text/template" id="tmpl-video-item">
 
-            <!-- Example row of columns -->
             <div class="row">
-                <div class="span4 offset1">
-                    <img class="img-polaroid" src="<%= item.preview_image_url %>">
-                </div>
-                <div class="span7">
-                    <a href="#videos/<%= item.id %>"><h2><%= item.title %></h2></a>
-                    <p><small><%= item.author %>, <%= item.published_date %></small></p>
-                    <p>
-                        <small>
-                            <% if (item.category) { %>
-                                <a href="#search/books/category:<%= item.category %>"><span class="badge badge-important"><%= item.category %></span></a>
-                            <% } %>
-                            <% _.each(item.tags, function(tag) { %>
-                                <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
-                            <% }); %>
-                        </small>
-                    </p>
-                </div>
+              <div class="span4 offset1">
+                <img class="img-polaroid" src="<%= item.preview_image_url %>">
+              </div>
+              <div class="span7">
+                <a href="#videos/<%= item.id %>"><h2><%= item.title %></h2></a>
+                <p><small><%= item.author %>, <%= item.published_date %></small></p>
+                <p>
+                  <small>
+                    <% if (item.category) { %>
+                        <a href="#search/videos/category:<%= item.category %>"><span class="badge badge-important"><%= item.category %></span></a>
+                    <% } %>
+                    <% _.each(item.tags, function(tag) { %>
+                        <a href="#search/videos/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                    <% }); %>
+                  </small>
+                </p>
+              </div>
             </div>  
             <div class="row" style="margin-top: 10px">
               <div class="offset2 span9">
@@ -148,7 +107,6 @@
             </div>
 
             <br />
-            <hr />
         </script>
 
         <script type="text/template" id="tmpl-videos">
@@ -156,7 +114,7 @@
             <div class="row">
                 <div class="offset2 span8">
                     <ul class="nav nav-pills">
-                        <li id="sub-menu-lb"><a data-menu-item="lb" href="#">latest books</a></li>
+                        <li id="sub-menu-lb"><a data-menu-item="lb" href="#">latest videos</a></li>
                         <li id="sub-menu-mr" class="active"><a data-menu-item="mr" href="#">most recommended</a></li>
                         <li id="sub-menu-lr"><a data-menu-item="lr" href="#">latest recommendation</a></li>
                     </ul>
@@ -224,6 +182,109 @@
           <% }); %>
         </script>
 
+
+        <script type="text/template" id="tmpl-videos-by">
+          <div class="row well">
+              <img class="span3" src="<%= picture_url %>">
+          
+              <div class="span8">
+
+                  <h4><%= name %></h4>
+                  <p><small><%= tagline %></small></p>
+                  <p><%= about %></p>
+              </div>
+          </div>
+
+          <h3>And I recommend watching</h3>
+
+          <% _.each(recommendations, function(rcd) { %>
+            <div class="row">
+              <div class="span4 offset1">
+                <img class="img-polaroid" src="<%= rcd.item.preview_image_url %>">
+              </div>
+              <div class="span7">
+                <a href="#videos/<%= rcd.item.id %>"><h2><%= rcd.item.title %></h2></a>
+                <p><small><%= rcd.item.author %>, <%= rcd.item.published_date %></small></p>
+                <p>
+                  <small>
+                    <% if (rcd.item.category) { %>
+                        <a href="#search/videos/category:<%= rcd.item.category %>"><span class="badge badge-important"><%= rcd.item.category %></span></a>
+                    <% } %>
+                    <% _.each(rcd.item.tags, function(tag) { %>
+                        <a href="#search/videos/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                    <% }); %>
+                  </small>
+                </p>
+              </div>
+            </div>  
+            <div class="row" style="margin-top: 10px">
+              <div class="offset2 span9">
+                  <blockquote>
+                    <p><%= rcd.says %></p>
+                    </p>
+                </blockquote>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+        </script>
+        <!-- 
+
+        BBBBB    OOOOO   OOOOO  KK  KK  SSSSS  
+        BB   B  OO   OO OO   OO KK KK  SS      
+        BBBBBB  OO   OO OO   OO KKKK    SSSSS  
+        BB   BB OO   OO OO   OO KK KK       SS 
+        BBBBBB   OOOO0   OOOO0  KK  KK  SSSSS 
+                                                     
+         -->
+        <script type="text/template" id="tmpl-book-item">
+
+            <!-- Example row of columns -->
+            <div class="row">
+                <div class="span2 offset1">
+                    <img src="<%= item.picture_url %>">
+                </div>
+                <div class="span8">
+                    <a href="#books/<%= item.id %>"><h2><%= item.title %></h2></a>
+                    <p><small><%= item.author %>, <%= item.published_date %></small></p>
+                    <blockquote>
+                        <p><%= rcd.says %> <a href="#books/<%= item.id %>">read more recommendations</a></p>
+                        <small><a href="#books/by/<%= user.id %>"><%= user.name %>, <%= user.tagline %></a></small>
+                        </p>
+                    </blockquote>
+                    <p style="text-align: right">
+                        <small>
+                            <% _.each(item.tags, function(tag) { %>
+                                <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                            <% }); %>
+                            <% if (item.level) { %>
+                                <a href="#search/books/level:<%= item.level %>"><span class="badge badge-important"><%= item.level %></span></a>
+                            <% } %>
+                        </small>
+                    </p>
+                </div>
+            </div>
+
+            <br />
+        </script>
+
+        <script type="text/template" id="tmpl-books">
+
+            <div class="row">
+                <div class="offset2 span8">
+                    <ul class="nav nav-pills">
+                        <li id="sub-menu-lb"><a data-menu-item="lb" href="#">latest books</a></li>
+                        <li id="sub-menu-mr" class="active"><a data-menu-item="mr" href="#">most recommended</a></li>
+                        <li id="sub-menu-lr"><a data-menu-item="lr" href="#">latest recommendation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="item-list">
+            </div>
+
+        </script>
+
+
         <script type="text/template" id="tmpl-book">
           <div class="row">
               <div class="span3 offset1">
@@ -276,48 +337,48 @@
         </script>
 
         <script type="text/template" id="tmpl-books-by">
+          <div class="row well">
+              <img class="span3" src="<%= picture_url %>">
+          
+              <div class="span8">
 
-            <div class="row well">
-                <img class="span3" src="<%= picture_url %>">
-            
-                <div class="span8">
+                  <h4><%= name %></h4>
+                  <p><small><%= tagline %></small></p>
+                  <p><%= about %></p>
+              </div>
+          </div>
 
-                    <h4><%= name %></h4>
-                    <p><small><%= tagline %></small></p>
-                    <p><%= about %></p>
-                </div>
-            </div>
+          <h3>And I recommend reading</h3>
 
-            <h3>And I recommend</h3>
+          <% _.each(recommendations, function(rcd) { %>
+              <div class="row">
+                  <div class="span2 offset1">
+                      <img src="<%= rcd.item.picture_url %>">
+                  </div>
+                  <div class="span8">
+                      <a href="#books/<%= rcd.item.id %>"><h2><%= rcd.item.title %></h2></a>
+                      <p><small><%= rcd.item.author %>, <%= rcd.item.published_date %></small></p>
+                      <blockquote>
+                          <p><%= rcd.says %> <a href="#books/<%= rcd.item.id %>">read more recommendations</a></p>
+                      </blockquote>
+                      <p style="text-align: right">
+                          <small>
+                              <% _.each(rcd.item.tags, function(tag) { %>
+                                  <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                              <% }); %>
+                              <% if (rcd.item.level) { %>
+                                  <a href="#search/books/level:<%= rcd.item.level %>"><span class="badge badge-important"><%= rcd.item.level %></span></a>
+                              <% } %>
+                          </small>
+                      </p>
+                  </div>
+              </div>
 
-            <% _.each(recommendations, function(rcd) { %>
-                <div class="row">
-                    <div class="span2 offset1">
-                        <img src="<%= rcd.book.picture_url %>">
-                    </div>
-                    <div class="span8">
-                        <a href="#books/<%= rcd.book.id %>"><h2><%= rcd.book.title %></h2></a>
-                        <p><small><%= rcd.book.author %>, <%= rcd.book.published_date %></small></p>
-                        <blockquote>
-                            <p><%= rcd.says %> <a href="#books/<%= rcd.book.id %>">read more recommendations</a></p>
-                        </blockquote>
-                        <p style="text-align: right">
-                            <small>
-                                <% _.each(rcd.book.tags, function(tag) { %>
-                                    <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
-                                <% }); %>
-                                <% if (rcd.book.level) { %>
-                                    <a href="#search/books/level:<%= rcd.book.level %>"><span class="badge badge-important"><%= rcd.book.level %></span></a>
-                                <% } %>
-                            </small>
-                        </p>
-                    </div>
-                </div>
-
-                <br />
-                <% }); %>
-            </div>
+              <br />
+              <% }); %>
+          </div>
         </script>
+
 
         <script type="text/template" id="tmpl-add-recommendation">
             <form class="form-horizontal">
