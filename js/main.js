@@ -190,6 +190,12 @@ $(function() {
             return item.get("level") === level;
           });
         }
+        
+        if (category) {
+          item_listing = _.filter(item_listing, function(item) {
+            return item.get("category") === category;
+          });
+        }
 
         if (tags.length) {
           item_listing = _.filter(item_listing, function(item) {
