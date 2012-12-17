@@ -115,12 +115,12 @@
         </script>
 
 
-        <script type="text/template" id="tmpl-youtube-item">
+        <script type="text/template" id="tmpl-video-item">
 
             <!-- Example row of columns -->
             <div class="row">
                 <div class="span2 offset1">
-                    <img src="http://i.ytimg.com/vi/<%= item.youtube_id %>/default.jpg">
+                    <img src="<%= item.preview_image_url %>">
                 </div>
                 <div class="span8">
                     <a href="#books/<%= item.id %>"><h2><%= item.title %></h2></a>

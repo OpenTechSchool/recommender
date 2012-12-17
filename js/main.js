@@ -61,8 +61,16 @@ $(function() {
   var Video = Backbone.Model.extend({
     defaults: {
       tags: [],
-      template: "book",
-      desc: ""
+      desc: "",
+      preview_image_url: ""
+    },
+
+    initialize: function(input) {
+      if (input.source === "youtube") {
+        console.log("yep");
+        this.set("preview_image_url",
+          "http://i.ytimg.com/vi/" + input.youtube_id + "/default.jpg");
+      }
     },
 
     getRecommendationCount: function() {
@@ -213,7 +221,7 @@ $(function() {
             // no recommendation found
             return;
           }
-          $target.append(view.itemTemplates[item.get("template") || "default"]({
+          $target.append(view.itemTemplate({
             item: item.toJSON(),
             rcd: rcm.toJSON(),
             user: rcm.getUser().toJSON()
@@ -248,7 +256,7 @@ $(function() {
             // no recommendation found
             return;
           }
-          $target.append(view.itemTemplates[item.get("template") || "default"]({
+          $target.append(view.itemTemplate({
             item: item.toJSON(),
             rcd: rcm.toJSON(),
             user: rcm.getUser().toJSON()
@@ -285,17 +293,13 @@ $(function() {
 
   var BooksView = ListingBaseView.extend({
     template: _.template($('#tmpl-books').html()),
-    itemTemplates: {
-        "default": _.template($('#tmpl-book-item').html())
-      },
+    itemTemplate: _.template($('#tmpl-book-item').html()),
     collection_name: "books"
   });
 
   var VideosView = ListingBaseView.extend({
     template: _.template($('#tmpl-videos').html()),
-    itemTemplates: {
-        "youtube": _.template($('#tmpl-youtube-item').html())
-      },
+    itemTemplate: _.template($('#tmpl-video-item').html()),
     collection_name: "videos"
   });
 
