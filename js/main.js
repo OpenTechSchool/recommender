@@ -157,15 +157,24 @@ $(function() {
       if (this.query) {
         var query = [],
             level = "",
+            category = "",
             tags = [];
         _.each(this.query.split("+"), function(item) {
-            if (item.slice(0, 6) === "level:") {
+          if (item.slice(0, 6) === "level:") {
             var qu = item.slice(6);
             if (qu && !level) {
               level = qu;
             }
             return;
           }
+          if (item.slice(0, 9) === "category:") {
+            var que = item.slice(9);
+            if (que && !category) {
+              category = que;
+            }
+            return;
+          }
+
           if (item.slice(0, 4) === "tag:") {
             var tag = item.slice(4);
             if (tag) {
@@ -344,6 +353,7 @@ $(function() {
     events: {
       "submit form": "submit_form"
     },
+    target: "books",
 
     set_query: function(query) {
       if (query) {
@@ -354,7 +364,7 @@ $(function() {
 
     submit_form: function() {
       var search = $(this.el).find("input").val().split(" ").join("+");
-      this.options.app.navigate("search/books/" + search , {trigger: true});
+      this.options.app.navigate("search/"+ this.target + "/" + search , {trigger: true});
       return false;
     }
   });
@@ -735,15 +745,17 @@ $(function() {
       app.profiles.app = app.books.app = app.videos.app = app.recommendations.app = app;
 
       app.main = $('#main');
-      app.search = new SearchFormView({el: $('#search-form'), app: app});
-      app.mainNavView = mainNavView = new MainNavView({el: $('#navbar'), app: app});
+      var searchFormView = app.search = new SearchFormView({el: $('#search-form'), app: app});
+      var mainNavView = app.mainNavView  = new MainNavView({el: $('#navbar'), app: app});
 
       mainNavView.render_login_bar();
 
       app.progress = 10;
 
       app.on("pageLoaded", function(target) {
-        mainNavView.select(target);
+        mainNavView.select(target + "-menu");
+        searchFormView.target = target;
+
         if (app.state.get("edit_mode")){
           $(app.el).find(".js-editable").editable({
             url: $.proxy(this._submit_editable, this)
@@ -808,19 +820,6 @@ $(function() {
     },
 
 
-    books: function (params) {
-      if (!this.booksView) {
-          this.booksView = new BooksView({app: this});
-          this.booksView.render();
-      } else {
-          this.booksView.delegateEvents(); // delegate events when the view is recycled
-      }
-      this.search.set_query(params);
-      this.booksView.set_query(_.isString(params)? params.toLowerCase(): params);
-      this.main.html(this.booksView.el);
-      this.trigger("pageLoaded", "books-menu");
-    },
-
     videos: function (params) {
       if (!this.videosView) {
           this.videosView = new VideosView({app: this});
@@ -831,34 +830,7 @@ $(function() {
       this.search.set_query(params);
       this.videosView.set_query(_.isString(params)? params.toLowerCase(): params);
       this.main.html(this.videosView.el);
-      this.trigger("pageLoaded", "videos-menu");
-    },
-
-
-
-    books_by: function (user) {
-        if (!this.booksByView) {
-            this.booksByView = new BooksByView({app: this});
-        } else {
-            this.booksByView.delegateEvents(); // delegate events when the view is recycled
-        }
-        this.booksByView.model = this.profiles.get(user);
-        this.booksByView.render();
-        this.main.html(this.booksByView.el);
-      this.trigger("pageLoaded", "books-menu");
-    },
-
-    book: function (book) {
-        // Since the home view never changes, we instantiate it and render it only once
-        if (!this.bookView) {
-            this.bookView = new BookView({app: this});
-        } else {
-            this.bookView.delegateEvents(); // delegate events when the view is recycled
-        }
-        this.bookView.model = this.books.get(book);
-        this.bookView.render();
-        this.main.html(this.bookView.el);
-        this.trigger("pageLoaded", "books-menu");
+      this.trigger("pageLoaded", "videos");
     },
 
     videos_by: function (user) {
@@ -870,7 +842,7 @@ $(function() {
         this.videosByView.model = this.profiles.get(user);
         this.videosByView.render();
         this.main.html(this.videosByView.el);
-      this.trigger("pageLoaded", "videos-menu");
+      this.trigger("pageLoaded", "videos");
     },
 
     video: function (video) {
@@ -883,7 +855,47 @@ $(function() {
         this.videoView.model = this.videos.get(video);
         this.videoView.render();
         this.main.html(this.videoView.el);
-        this.trigger("pageLoaded", "videos-menu");
+        this.trigger("pageLoaded", "videos");
+    },
+
+
+    books: function (params) {
+      if (!this.booksView) {
+          this.booksView = new BooksView({app: this});
+          this.booksView.render();
+      } else {
+          this.booksView.delegateEvents(); // delegate events when the view is recycled
+      }
+      this.search.set_query(params);
+      this.booksView.set_query(_.isString(params)? params.toLowerCase(): params);
+      this.main.html(this.booksView.el);
+      this.trigger("pageLoaded", "books");
+    },
+
+
+    books_by: function (user) {
+        if (!this.booksByView) {
+            this.booksByView = new BooksByView({app: this});
+        } else {
+            this.booksByView.delegateEvents(); // delegate events when the view is recycled
+        }
+        this.booksByView.model = this.profiles.get(user);
+        this.booksByView.render();
+        this.main.html(this.booksByView.el);
+      this.trigger("pageLoaded", "books");
+    },
+
+    book: function (book) {
+        // Since the home view never changes, we instantiate it and render it only once
+        if (!this.bookView) {
+            this.bookView = new BookView({app: this});
+        } else {
+            this.bookView.delegateEvents(); // delegate events when the view is recycled
+        }
+        this.bookView.model = this.books.get(book);
+        this.bookView.render();
+        this.main.html(this.bookView.el);
+        this.trigger("pageLoaded", "books");
     },
 
     home: function () {
@@ -895,7 +907,7 @@ $(function() {
             this.homeView.delegateEvents(); // delegate events when the view is recycled
         }
         this.main.html(this.homeView.el);
-        this.trigger("pageLoaded", "home-menu");
+        this.trigger("pageLoaded", "home");
     }
 
   });

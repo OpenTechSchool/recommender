@@ -83,12 +83,13 @@
               </div>
               <div class="span7">
                 <a href="#videos/<%= item.id %>"><h2><%= item.title %></h2></a>
-                <p><small><%= item.author %>, <%= item.published_date %></small></p>
+                <p>
+                    <% if (item.category) { %>
+                        <a href="#search/videos/category:<%= item.category %>"><span class="badge badge-important"><%= item.category %></span></a>&nbsp;
+                    <% } %>
+                    <small><%= item.author %>, <%= item.published_date %></small></p>
                 <p>
                   <small>
-                    <% if (item.category) { %>
-                        <a href="#search/videos/category:<%= item.category %>"><span class="badge badge-important"><%= item.category %></span></a>
-                    <% } %>
                     <% _.each(item.tags, function(tag) { %>
                         <a href="#search/videos/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
                     <% }); %>
@@ -141,7 +142,7 @@
                 <p>
                   <small>
                     <% if (category) { %>
-                      <a href="#search/videos/category:<%= category %>"><span class="badge badge-important"><%= category %></span></a><br>
+                      <a href="#search/videos/category:<%= category %>"><span class="badge badge-important"><%= category %></span></a>&nbsp;
                     <% } %>
                     <span class="js-editable" data-name="videos.author" data-pk="<%= id %>" data-type="text"><%= author %></span>,
                     <span class="js-editable" data-name="videos.author" data-pk="<%= id %>" data-type="text"><%= published_date %></span>
@@ -162,7 +163,7 @@
           <br />
           <div class="row">
               <div class="offset1">
-                  <h3>Recommended by</h3>
+                  <h3>Recommended by (<%= recommendations.length %>)</h3>
               </div>
           </div>
           <% _.each(recommendations, function(rcd) { %>
@@ -208,7 +209,7 @@
                 <p>
                   <small>
                     <% if (rcd.item.category) { %>
-                        <a href="#search/videos/category:<%= rcd.item.category %>"><span class="badge badge-important"><%= rcd.item.category %></span></a>
+                        <a href="#search/videos/category:<%= rcd.item.category %>"><span class="badge badge-important"><%= rcd.item.category %></span></a>&nbsp;
                     <% } %>
                     <% _.each(rcd.item.tags, function(tag) { %>
                         <a href="#search/videos/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
@@ -316,7 +317,7 @@
           <br />
           <div class="row">
               <div class="offset1">
-                  <h3>Recommended by</h3>
+                  <h3>Recommended by (<%= recommendations.length %>)</h3>
               </div>
           </div>
           <% _.each(recommendations, function(rcd) { %>
