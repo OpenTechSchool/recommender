@@ -119,18 +119,13 @@
 
             <!-- Example row of columns -->
             <div class="row">
-                <div class="span2 offset1">
-                    <img src="<%= item.preview_image_url %>">
+                <div class="span4 offset1">
+                    <img class="img-polaroid" src="<%= item.preview_image_url %>">
                 </div>
-                <div class="span8">
-                    <a href="#books/<%= item.id %>"><h2><%= item.title %></h2></a>
+                <div class="span7">
+                    <a href="#videos/<%= item.id %>"><h2><%= item.title %></h2></a>
                     <p><small><%= item.author %>, <%= item.published_date %></small></p>
-                    <blockquote>
-                        <p><%= rcd.says %> <a href="#books/<%= item.id %>">read more recommendations</a></p>
-                        <small><a href="#books/by/<%= user.id %>"><%= user.name %>, <%= user.tagline %></a></small>
-                        </p>
-                    </blockquote>
-                    <p style="text-align: right">
+                    <p>
                         <small>
                             <% if (item.category) { %>
                                 <a href="#search/books/category:<%= item.category %>"><span class="badge badge-important"><%= item.category %></span></a>
@@ -141,9 +136,19 @@
                         </small>
                     </p>
                 </div>
+            </div>  
+            <div class="row" style="margin-top: 10px">
+              <div class="offset2 span9">
+                  <blockquote>
+                    <p><%= rcd.says %> <a href="#videos/<%= item.id %>">read more recommendations</a></p>
+                    <small stlye="text-align: right"><a href="#videos/by/<%= user.id %>"><%= user.name %>, <%= user.tagline %></a></small>
+                    </p>
+                </blockquote>
+              </div>
             </div>
 
             <br />
+            <hr />
         </script>
 
         <script type="text/template" id="tmpl-videos">
@@ -162,74 +167,112 @@
 
         </script>
 
+        <script type="text/template" id="tmpl-video">
+          <div class="row">
+            <div class="offset1 span10" style="text-align: center">
+              <% if (embed) { %>
+                <%= embed %>
+              <% } else  {%>
+                <a href="<%= item_url %>"><img src="<%= preview_image_url %>" class="img-polaroid"></a>
+              <% } %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="offset1 span10">                      
+              <h2 class="js-editable" data-inputclass="span6" data-name="videos.title" data-pk="<%= id %>" data-type="text"><%= title %></span></h2>
+                <p>
+                  <small>
+                    <% if (category) { %>
+                      <a href="#search/videos/category:<%= category %>"><span class="badge badge-important"><%= category %></span></a><br>
+                    <% } %>
+                    <span class="js-editable" data-name="videos.author" data-pk="<%= id %>" data-type="text"><%= author %></span>,
+                    <span class="js-editable" data-name="videos.author" data-pk="<%= id %>" data-type="text"><%= published_date %></span>
+                  </small>
+                </p>
+                <p>
+                  Tags:
+                  <% _.each(tags, function(tag) { %>
+                      <a href="#search/videos/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                  <% }); %>
+                </p>
+                <h4>Short Description</h4>
+                <p class="js-editable" data-name="videos.desc" data-pk="<%= id %>" data-type="textarea" data-inputclass="span8"><%= desc %></p>
+                </p>
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+              <div class="offset1">
+                  <h3>Recommended by</h3>
+              </div>
+          </div>
+          <% _.each(recommendations, function(rcd) { %>
+
+              <div class="row">
+                  <div class="span2 offset1">
+                      <img src="<%= rcd.user.picture_url %>">
+                  </div>
+                  <div class="span8">
+                      <h4 class="js-editable" data-name="profiles.name" data-pk="<%= rcd.user.id %>" data-type="text"><%= rcd.user.name %></h4>
+                      <p><small class="js-editable" data-name="profiles.tagline" data-pk="<%= rcd.user.id %>" data-type="text"><%= rcd.user.tagline %></small></p>
+                      <blockquote><p class="js-editable" data-name="recommendations.says" data-pk="<%= rcd.id %>" data-type="textarea" data-inputclass="span8"><%= rcd.says %></p>
+                          <small class="pull-right"><a href="#videos/by/<%= rcd.user.id %>">more from <%= rcd.user.nick%></a></small>
+                      </blockquote>
+                  </div>
+              </div>
+          <% }); %>
+        </script>
+
         <script type="text/template" id="tmpl-book">
+          <div class="row">
+              <div class="span3 offset1">
+                 <img src="<%= picture_url %>">
+              </div>
+                  <div class="span8">
+                      
+                      <h2 class="js-editable" data-inputclass="span6" data-name="books.title" data-pk="<%= id %>" data-type="text"><%= title %></span></h2>
+                      <p>
+                        <small>
+                          <span class="js-editable" data-name="books.author" data-pk="<%= id %>" data-type="text"><%= author %></span>,
+                          <span class="js-editable" data-name="books.author" data-pk="<%= id %>" data-type="text"><%= published_date %></span></small></p>
+                      <p>Tags:
+                              <% _.each(tags, function(tag) { %>
+                                  <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                              <% }); %>
 
-        <div id="newBook" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Edit Book" aria-hidden="true">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Edit Book</h3>
+                              <% if (level) { %>
+                                  <br> Level: <a href="#search/books/level:<%= level %>"><span class="badge badge-important"><%= level %></span></a>
+                              <% } %>
+                      </p>
+                  <h4>Book Description</h4>
+                  <p class="js-editable" data-name="books.desc" data-pk="<%= id %>" data-type="textarea" data-inputclass="span8"><%= desc %></p>
+                      <a href="">More on amazon.com</a>
+                  </p>
+              </div>
           </div>
-          <div class="modal-body">
-            <form>
-                <
-            </form>
+
+          <br />
+          <div class="row">
+              <div class="offset1">
+                  <h3>Recommended by</h3>
+              </div>
           </div>
-          <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-            <button class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
+          <% _.each(recommendations, function(rcd) { %>
 
-            <!-- Example row of columns -->
-            <div class="row">
-                <div class="span3 offset1">
-                   <img src="<%= picture_url %>">
-                </div>
-                    <div class="span8">
-                        
-                        <h2 class="js-editable" data-inputclass="span6" data-name="books.title" data-pk="<%= id %>" data-type="text"><%= title %></span></h2>
-                        <p>
-                          <small>
-                            <span class="js-editable" data-name="books.author" data-pk="<%= id %>" data-type="text"><%= author %></span>,
-                            <span class="js-editable" data-name="books.author" data-pk="<%= id %>" data-type="text"><%= published_date %></span></small></p>
-                        <p>Tags:
-                                <% _.each(tags, function(tag) { %>
-                                    <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
-                                <% }); %>
-
-                                <% if (level) { %>
-                                    <br> Level: <a href="#search/books/level:<%= level %>"><span class="badge badge-important"><%= level %></span></a>
-                                <% } %>
-                        </p>
-                    <h4>Book Description</h4>
-                    <p class="js-editable" data-name="books.desc" data-pk="<%= id %>" data-type="textarea" data-inputclass="span8"><%= desc %></p>
-                        <a href="">More on amazon.com</a>
-                    </p>
-                </div>
-            </div>
-
-            <br />
-            <div class="row">
-                <div class="offset1">
-                    <h3>Recommended by</h3>
-                </div>
-            </div>
-            <% _.each(recommendations, function(rcd) { %>
-
-                <div class="row">
-                    <div class="span2 offset1">
-                        <img src="<%= rcd.user.picture_url %>">
-                    </div>
-                    <div class="span8">
-                        <h4 class="js-editable" data-name="profiles.name" data-pk="<%= rcd.user.id %>" data-type="text"><%= rcd.user.name %></h4>
-                        <p><small class="js-editable" data-name="profiles.tagline" data-pk="<%= rcd.user.id %>" data-type="text"><%= rcd.user.tagline %></small></p>
-                        <blockquote><p class="js-editable" data-name="recommendations.says" data-pk="<%= rcd.id %>" data-type="textarea" data-inputclass="span8"><%= rcd.says %></p>
-                            <small class="pull-right"><a href="#books/by/<%= rcd.user.id %>">more from <%= rcd.user.nick%></a></small>
-                        </blockquote>
-                    </div>
-                </div>
-            <% }); %>
-
+              <div class="row">
+                  <div class="span2 offset1">
+                      <img src="<%= rcd.user.picture_url %>">
+                  </div>
+                  <div class="span8">
+                      <h4 class="js-editable" data-name="profiles.name" data-pk="<%= rcd.user.id %>" data-type="text"><%= rcd.user.name %></h4>
+                      <p><small class="js-editable" data-name="profiles.tagline" data-pk="<%= rcd.user.id %>" data-type="text"><%= rcd.user.tagline %></small></p>
+                      <blockquote><p class="js-editable" data-name="recommendations.says" data-pk="<%= rcd.id %>" data-type="textarea" data-inputclass="span8"><%= rcd.says %></p>
+                          <small class="pull-right"><a href="#books/by/<%= rcd.user.id %>">more from <%= rcd.user.nick%></a></small>
+                      </blockquote>
+                  </div>
+              </div>
+          <% }); %>
         </script>
 
         <script type="text/template" id="tmpl-books-by">

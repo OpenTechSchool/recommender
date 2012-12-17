@@ -68,8 +68,10 @@ $(function() {
     initialize: function(input) {
       if (input.source === "youtube") {
         console.log("yep");
-        this.set("preview_image_url",
-          "http://i.ytimg.com/vi/" + input.youtube_id + "/default.jpg");
+        this.set({
+          "preview_image_url": "http://i.ytimg.com/vi/" + input.youtube_id + "/mqdefault.jpg",
+          "embed": '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/' + input.youtube_id + '" frameborder="0"> </iframe>'
+        });
       }
     },
 
@@ -109,7 +111,7 @@ $(function() {
         return this.collection.app.videos.get(item_id);
     },
     getBook: function() {
-      return this.get_item();
+      return this.getItem();
     }
 
   });
@@ -318,14 +320,11 @@ $(function() {
     }
   });
 
-  var BookView = TmplView.extend({
-     default_context: {"level": null},
-     template: _.template($('#tmpl-book').html()),
-
+   var ItemBaseView = TmplView.extend({
     extend_context: function() {
       var app = this.options.app;
       return {"recommendations": app.recommendations.where({
-          "type": "book",
+          "type": this.type,
           "item_id": this.model.id
         }).map(function(item){
           return item.extendedJSON();
@@ -333,6 +332,18 @@ $(function() {
       };
     }
   });
+
+  var BookView = ItemBaseView.extend({
+     default_context: {"level": null},
+     template: _.template($('#tmpl-book').html()),
+     type: "book"
+   });
+
+  var VideoView = ItemBaseView.extend({
+     default_context: {"category": null, "embed": null, "item_url": null},
+     template: _.template($('#tmpl-video').html()),
+     type: "video"
+   });
 
   var SearchFormView = Backbone.View.extend({
     events: {
@@ -691,6 +702,11 @@ $(function() {
         "books/:book": "book",
         "search/books/:params": "books",
 
+        // Videos
+        "videos/by/:user": "videos_by",
+        "videos/:video": "video",
+        "search/videos/:params": "videos",
+
         // adding
         "add/:type": "add_item",
 
@@ -798,6 +814,7 @@ $(function() {
           });
     },
 
+
     books: function (params) {
       if (!this.booksView) {
           this.booksView = new BooksView({app: this});
@@ -824,6 +841,8 @@ $(function() {
       this.trigger("pageLoaded", "videos-menu");
     },
 
+
+
     books_by: function (user) {
         if (!this.booksByView) {
             this.booksByView = new BooksByView({app: this});
@@ -847,6 +866,31 @@ $(function() {
         this.bookView.render();
         this.main.html(this.bookView.el);
         this.trigger("pageLoaded", "books-menu");
+    },
+
+    videos_by: function (user) {
+        if (!this.videosByView) {
+            this.videosByView = new videosByView({app: this});
+        } else {
+            this.videosByView.delegateEvents(); // delegate events when the view is recycled
+        }
+        this.videosByView.model = this.profiles.get(user);
+        this.videosByView.render();
+        this.main.html(this.videosByView.el);
+      this.trigger("pageLoaded", "videos-menu");
+    },
+
+    video: function (video) {
+        // Since the home view never changes, we instantiate it and render it only once
+        if (!this.videoView) {
+            this.videoView = new VideoView({app: this});
+        } else {
+            this.videoView.delegateEvents(); // delegate events when the view is recycled
+        }
+        this.videoView.model = this.videos.get(video);
+        this.videoView.render();
+        this.main.html(this.videoView.el);
+        this.trigger("pageLoaded", "videos-menu");
     },
 
     home: function () {
