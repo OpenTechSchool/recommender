@@ -13,6 +13,13 @@
     "item_id": "rework",
     "says": "Ever felt like wanna start a startup? This is most important book you need to bootstrap your company successfully"
   },
+    {
+    "id": "ben.bbc-peter-jones-we-made-our-millions",
+    "by": "ben",
+    "type": "video",
+    "item_id": "bbc-peter-jones-we-made-our-millions",
+    "says": "This is a really moving and inspiring video. Where most other reportage are only scratching the surface, this one goes deeper into the feelings and thoughts of the founders to uncover what really drives them. It is a highyl emotional piece showing that while despite popular believe the roots in so many successful entreprneurhsip lies in deep self doubt and under other circumstances probably would be called a psychoatric desease ..."
+  },
   {
     "id": "ben.just-for-fun",
     "by": "ben",

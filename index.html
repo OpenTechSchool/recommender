@@ -72,23 +72,23 @@
             <!-- Example row of columns -->
             <div class="row">
                 <div class="span2 offset1">
-                    <img src="<%= book.picture_url %>">
+                    <img src="<%= item.picture_url %>">
                 </div>
                 <div class="span8">
-                    <a href="#books/<%= book.id %>"><h2><%= book.title %></h2></a>
-                    <p><small><%= book.author %>, <%= book.published_date %></small></p>
+                    <a href="#books/<%= item.id %>"><h2><%= item.title %></h2></a>
+                    <p><small><%= item.author %>, <%= item.published_date %></small></p>
                     <blockquote>
-                        <p><%= rcd.says %> <a href="#books/<%= book.id %>">read more recommendations</a></p>
+                        <p><%= rcd.says %> <a href="#books/<%= item.id %>">read more recommendations</a></p>
                         <small><a href="#books/by/<%= user.id %>"><%= user.name %>, <%= user.tagline %></a></small>
                         </p>
                     </blockquote>
                     <p style="text-align: right">
                         <small>
-                            <% _.each(book.tags, function(tag) { %>
+                            <% _.each(item.tags, function(tag) { %>
                                 <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
                             <% }); %>
-                            <% if (book.level) { %>
-                                <a href="#search/books/level:<%= book.level %>"><span class="badge badge-important"><%= book.level %></span></a>
+                            <% if (item.level) { %>
+                                <a href="#search/books/level:<%= item.level %>"><span class="badge badge-important"><%= item.level %></span></a>
                             <% } %>
                         </small>
                     </p>
@@ -109,7 +109,55 @@
                     </ul>
                 </div>
             </div>
-            <div id="book-list">
+            <div id="item-list">
+            </div>
+
+        </script>
+
+
+        <script type="text/template" id="tmpl-youtube-item">
+
+            <!-- Example row of columns -->
+            <div class="row">
+                <div class="span2 offset1">
+                    <img src="http://i.ytimg.com/vi/<%= item.youtube_id %>/default.jpg">
+                </div>
+                <div class="span8">
+                    <a href="#books/<%= item.id %>"><h2><%= item.title %></h2></a>
+                    <p><small><%= item.author %>, <%= item.published_date %></small></p>
+                    <blockquote>
+                        <p><%= rcd.says %> <a href="#books/<%= item.id %>">read more recommendations</a></p>
+                        <small><a href="#books/by/<%= user.id %>"><%= user.name %>, <%= user.tagline %></a></small>
+                        </p>
+                    </blockquote>
+                    <p style="text-align: right">
+                        <small>
+                            <% if (item.category) { %>
+                                <a href="#search/books/category:<%= item.category %>"><span class="badge badge-important"><%= item.category %></span></a>
+                            <% } %>
+                            <% _.each(item.tags, function(tag) { %>
+                                <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                            <% }); %>
+                        </small>
+                    </p>
+                </div>
+            </div>
+
+            <br />
+        </script>
+
+        <script type="text/template" id="tmpl-videos">
+
+            <div class="row">
+                <div class="offset2 span8">
+                    <ul class="nav nav-pills">
+                        <li id="sub-menu-lb"><a data-menu-item="lb" href="#">latest books</a></li>
+                        <li id="sub-menu-mr" class="active"><a data-menu-item="mr" href="#">most recommended</a></li>
+                        <li id="sub-menu-lr"><a data-menu-item="lr" href="#">latest recommendation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="item-list">
             </div>
 
         </script>
@@ -368,8 +416,8 @@
               <ul class="nav" id="main-nav">
                   <li id="home-menu" class="active"><a href="#/">Home</a></li>
                   <li id="books-menu"><a href="#books/">Books</a></li>
-                  <li id="videos-menu"><a href="/videos.html">Videos</a></li>
-                  <li id="courses-menu"><a href="/courses.html">Courses</a></li>
+                  <li id="videos-menu"><a href="#videos/">Videos</a></li>
+                  <li id="courses-menu"><a href="#courses/">Courses</a></li>
               </ul>
               <div id="search-form" class="offset7">
                 <form class="navbar-search">

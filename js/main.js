@@ -58,6 +58,27 @@ $(function() {
     }
 
   });
+  var Video = Backbone.Model.extend({
+    defaults: {
+      tags: [],
+      template: "book",
+      desc: ""
+    },
+
+    getRecommendationCount: function() {
+        var app = this.collection.app;
+        return app.recommendations.where({"item_id": this.id}).length;
+    },
+    latestRecommendation: function() {
+      var app = this.collection.app,
+          my_id = this.get("id");
+      return app.recommendations.find(function(item){
+        return item.get("item_id") == my_id;
+      });
+    }
+
+  });
+
   var Recommendation = Backbone.Model.extend({
     extendedJSON: function() {
         var json = this.toJSON(),
@@ -69,8 +90,18 @@ $(function() {
     getUser: function() {
       return this.collection.app.profiles.get(this.get("by"));
     },
+    getItem: function() {
+      var type = this.get("type"),
+          item_id = this.get("item_id");
+
+      if (type === "book")
+        return this.collection.app.books.get(item_id);
+
+      if (type === "video")
+        return this.collection.app.videos.get(item_id);
+    },
     getBook: function() {
-      return this.collection.app.books.get(this.get("item_id"));
+      return this.get_item();
     }
 
   });
@@ -84,6 +115,11 @@ $(function() {
   var Books = Backbone.Collection.extend({
     model: Book,
     url: "data/books.json"
+  });
+
+  var Videos = Backbone.Collection.extend({
+    model: Video,
+    url: "data/Videos.json"
   });
 
   var Recommendations = Backbone.Collection.extend({
@@ -102,9 +138,7 @@ $(function() {
     }
   });
 
-  var BooksView = Backbone.View.extend({
-    template: _.template($('#tmpl-books').html()),
-    itemTemplate: _.template($('#tmpl-book-item').html()),
+  var ListingBaseView = Backbone.View.extend({
 
     sub_menu: "mr",
     item_count: 10,
@@ -114,9 +148,9 @@ $(function() {
       "click .nav li a": "select_menu"
     },
 
-    update_books: function() {
+    update_items: function() {
       var $el = $(this.el),
-          $target = $el.find("#book-list").html("Loading...");
+          $target = $el.find("#item-list").html("Loading...");
           app = this.options.app,
           view = this,
           rendered = [];
@@ -124,7 +158,7 @@ $(function() {
       $el.find(".nav li").removeClass("active");
       $el.find("#sub-menu-" + this.sub_menu).addClass("active");
 
-      var book_listing = app.books.models;
+      var item_listing = app[this.collection_name].models;
       if (this.query) {
         var query = [],
             level = "",
@@ -148,23 +182,23 @@ $(function() {
         });
         
         if (level) {
-          book_listing = _.filter(book_listing, function(book) {
-            return book.get("level") === level;
+          item_listing = _.filter(item_listing, function(item) {
+            return item.get("level") === level;
           });
         }
 
         if (tags.length) {
-          book_listing = _.filter(book_listing, function(book) {
-            return _.intersection(book.get("tags"), tags).length;
+          item_listing = _.filter(item_listing, function(item) {
+            return _.intersection(item.get("tags"), tags).length;
           });
         }
 
         if(query.length) {
-          book_listing = _.filter(book_listing, function(book) {
+          item_listing = _.filter(item_listing, function(item) {
             return !_.find(query, function(keyword) {
-              return book.attributes.title.toLowerCase().indexOf(keyword) === -1 &&
-                     book.attributes.desc.toLowerCase().indexOf(keyword) === -1 &&
-                     book.attributes.author.toLowerCase().indexOf(keyword) === -1;
+              return item.attributes.title.toLowerCase().indexOf(keyword) === -1 &&
+                     item.attributes.desc.toLowerCase().indexOf(keyword) === -1 &&
+                     item.attributes.author.toLowerCase().indexOf(keyword) === -1;
             });
           });
         }
@@ -173,14 +207,14 @@ $(function() {
 
       if (this.sub_menu == "lb") {
         $target.empty();
-        _.each(_.first(book_listing, this.item_count), function(book) {
-          var rcm = book.latestRecommendation();
+        _.each(_.first(item_listing, this.item_count), function(item) {
+          var rcm = item.latestRecommendation();
           if (!rcm) {
             // no recommendation found
             return;
           }
-          $target.append(view.itemTemplate({
-            book: book.toJSON(),
+          $target.append(view.itemTemplates[item.get("template") || "default"]({
+            item: item.toJSON(),
             rcd: rcm.toJSON(),
             user: rcm.getUser().toJSON()
           }));
@@ -189,7 +223,7 @@ $(function() {
         $target.empty();
         recommendations = app.recommendations.models;
         if (this.query) {
-          var item_ids = _.pluck(book_listing, "id");
+          var item_ids = _.pluck(item_listing, "id");
           recommendations = _.filter(recommendations, function(rcm) {
             var item_id = rcm.get("item_id");
             return _.find(item_ids, function(x) { return x === item_id; });
@@ -204,18 +238,18 @@ $(function() {
         });
       } else {
         // this must be most recommended
-        var selected_books = _.first(_.sortBy(book_listing, function(book) {
-              return book.getRecommendationCount();
+        var selected_items = _.first(_.sortBy(item_listing, function(item) {
+              return item.getRecommendationCount();
             }), this.item_count);
         $target.empty();
-        _.each(selected_books,function(book) {
-          var rcm = book.latestRecommendation();
+        _.each(selected_items,function(item) {
+          var rcm = item.latestRecommendation();
           if (!rcm) {
             // no recommendation found
             return;
           }
-          $target.append(view.itemTemplate({
-            book: book.toJSON(),
+          $target.append(view.itemTemplates[item.get("template") || "default"]({
+            item: item.toJSON(),
             rcd: rcm.toJSON(),
             user: rcm.getUser().toJSON()
           }));
@@ -231,23 +265,38 @@ $(function() {
 
     select_menu: function(ev) {
       this.sub_menu = $(ev.currentTarget).data("menu-item");
-      this.update_books();
+      this.update_items();
       return false;
     },
 
     set_query: function(query) {
       if (query === this.query) return;  // do nothing
       this.query = query;
-      this.update_books();
+      this.update_items();
     },
 
     render: function () {
       $(this.el).html(this.template());
-      this.update_books();
+      this.update_items();
       return this;
     }
+  });
 
 
+  var BooksView = ListingBaseView.extend({
+    template: _.template($('#tmpl-books').html()),
+    itemTemplates: {
+        "default": _.template($('#tmpl-book-item').html())
+      },
+    collection_name: "books"
+  });
+
+  var VideosView = ListingBaseView.extend({
+    template: _.template($('#tmpl-videos').html()),
+    itemTemplates: {
+        "youtube": _.template($('#tmpl-youtube-item').html())
+      },
+    collection_name: "videos"
   });
 
   var BooksByView = TmplView.extend({
@@ -637,7 +686,12 @@ $(function() {
         "books/by/:user": "books_by",
         "books/:book": "book",
         "search/books/:params": "books",
+
+        // adding
         "add/:type": "add_item",
+
+        // indizes
+        "videos/": "videos",
         "books/": "books"
     },
 
@@ -662,9 +716,10 @@ $(function() {
       app.state = new AppState({});
       app.profiles = new Profiles();
       app.books = new Books();
+      app.videos = new Videos();
       app.recommendations = new Recommendations();
 
-      app.profiles.app = app.books.app = app.recommendations.app = app;
+      app.profiles.app = app.books.app = app.videos.app = app.recommendations.app = app;
 
       app.main = $('#main');
       app.search = new SearchFormView({el: $('#search-form'), app: app});
@@ -728,10 +783,11 @@ $(function() {
     start: function() {
       var me = this;
       function next() {
-        me._update_loading_progress(30);
+        me._update_loading_progress(20);
       }
       return $.when(this.profiles.fetch().then(next),
             this.books.fetch().then(next),
+            this.videos.fetch().then(next),
             this.recommendations.fetch().then(next)
           ).then(function() {
             Backbone.history.start();
@@ -739,7 +795,6 @@ $(function() {
     },
 
     books: function (params) {
-      // Since the home view never changes, we instantiate it and render it only once
       if (!this.booksView) {
           this.booksView = new BooksView({app: this});
           this.booksView.render();
@@ -752,8 +807,20 @@ $(function() {
       this.trigger("pageLoaded", "books-menu");
     },
 
+    videos: function (params) {
+      if (!this.videosView) {
+          this.videosView = new VideosView({app: this});
+          this.videosView.render();
+      } else {
+          this.videosView.delegateEvents(); // delegate events when the view is recycled
+      }
+      this.search.set_query(params);
+      this.videosView.set_query(_.isString(params)? params.toLowerCase(): params);
+      this.main.html(this.videosView.el);
+      this.trigger("pageLoaded", "videos-menu");
+    },
+
     books_by: function (user) {
-        // Since the home view never changes, we instantiate it and render it only once
         if (!this.booksByView) {
             this.booksByView = new BooksByView({app: this});
         } else {
