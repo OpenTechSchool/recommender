@@ -20,6 +20,13 @@
     "item_id": "bbc-peter-jones-we-made-our-millions",
     "says": "This is a really moving and inspiring video. Where most other reportage are only scratching the surface, this one goes deeper into the feelings and thoughts of the founders to uncover what really drives them. It is a highyl emotional piece showing that while despite popular believe the roots in so many successful entreprneurhsip lies in deep self doubt and under other circumstances probably would be called a psychoatric desease ..."
   },
+    {
+    "id": "ben.gary-bernhardt-wat",
+    "by": "ben",
+    "type": "video",
+    "item_id": "gary-bernhardt-wat",
+    "says": "A quick but very funny look into these weird perks we have to deal with every day in javascript and ruby. And I also recommend reading <a target=\"_blank\" href=\"http://stackoverflow.com/questions/9032856/what-is-the-explanation-for-these-bizarre-javascript-behaviours-mentioned-in-the/9033306#9033306\">the explanantion of those bizarre behaviours</a> as it will help you understand what is going on."
+  },
   {
     "id": "ben.just-for-fun",
     "by": "ben",
