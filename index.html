@@ -205,12 +205,13 @@
               </div>
               <div class="span7">
                 <a href="#videos/<%= rcd.item.id %>"><h2><%= rcd.item.title %></h2></a>
-                <p><small><%= rcd.item.author %>, <%= rcd.item.published_date %></small></p>
-                <p>
-                  <small>
+                <p><small>
                     <% if (rcd.item.category) { %>
                         <a href="#search/videos/category:<%= rcd.item.category %>"><span class="badge badge-important"><%= rcd.item.category %></span></a>&nbsp;
                     <% } %>
+                    <%= rcd.item.author %>, <%= rcd.item.published_date %></small></p>
+                <p>
+                  <small>
                     <% _.each(rcd.item.tags, function(tag) { %>
                         <a href="#search/videos/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
                     <% }); %>
