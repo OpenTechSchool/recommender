@@ -69,7 +69,6 @@ $(function() {
 
     initialize: function(input) {
       if (input.source === "youtube") {
-        console.log("yep");
         this.set({
           "preview_image_url": "http://i.ytimg.com/vi/" + input.youtube_id + "/mqdefault.jpg",
           "embed": '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/' + input.youtube_id + '" frameborder="0"> </iframe>'
@@ -154,7 +153,7 @@ $(function() {
       $el.find(".nav li").removeClass("active");
       $el.find("#sub-menu-" + this.sub_menu).addClass("active");
 
-      var item_listing = app[this.collection_name].models;
+      var item_listing = app[this.type + "s"].models;
       if (this.query) {
         var query = [],
             level = "",
@@ -217,7 +216,7 @@ $(function() {
         });
       } else if (this.sub_menu === "lr") {
         $target.empty();
-        recommendations = app.recommendations.models;
+        recommendations = app.recommendations.where({ "type": this.type });
         if (this.query) {
           var item_ids = _.pluck(item_listing, "id");
           recommendations = _.filter(recommendations, function(rcm) {
@@ -227,7 +226,7 @@ $(function() {
         }
         _.each(_.first(recommendations, this.item_count), function(rcm) {
           $target.append(view.itemTemplate({
-            book: rcm.getBook().toJSON(),
+            item: rcm.getItem().toJSON(),
             rcd: rcm.toJSON(),
             user: rcm.getUser().toJSON()
           }));
@@ -282,13 +281,13 @@ $(function() {
   var BooksView = ListingBaseView.extend({
     template: _.template($('#tmpl-books').html()),
     itemTemplate: _.template($('#tmpl-book-item').html()),
-    collection_name: "books"
+    type: "book"
   });
 
   var VideosView = ListingBaseView.extend({
     template: _.template($('#tmpl-videos').html()),
     itemTemplate: _.template($('#tmpl-video-item').html()),
-    collection_name: "videos"
+    type: "video"
   });
 
    var ItemBaseView = TmplView.extend({
@@ -449,7 +448,6 @@ $(function() {
         serialized[$(itm).attr("name")] = $(itm).val() || null;
       });
       var model = new collection.model(this.extend_data(serialized));
-      //console.log(serialized);
       // FIXME: we should check at least the ID before comitting it
       
       // we always add the new model at the front.
@@ -666,7 +664,6 @@ $(function() {
           err = this.state.get("error"),
           $el = $(this.el);
       if (err) {
-        console.log("error");
         $el.find(".content-wrapper").empty().html(this.error_tmpl(err));
         $el.find(".close").show();
       } else if (repo_info) {
