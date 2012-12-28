@@ -437,7 +437,7 @@ $(function() {
     },
 
     toggleEdit: function(){
-      this.options.app.state.set("edit-mode", !this.options.app.state.get("edit-mode"));
+      this.options.app.state.set("edit_mode", !this.options.app.state.get("edit_mode"));
       return false;
     },
 
