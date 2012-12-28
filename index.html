@@ -335,8 +335,9 @@
                           <span class="js-editable" data-name="books.author" data-pk="<%= id %>" data-type="text"><%= published_date %></span></small></p>
                       <p>Tags:
                               <% _.each(tags, function(tag) { %>
-                                  <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                                  <a href="#search/books/tag:<%= tag %>"><span class="badge"><%= tag %></span></a><a class="in-edit-only remove-tag" data-tag="<%=tag %>" href="#"><span class="icon icon-remove-sign"></span></a>
                               <% }); %>
+                                <a class="add-tag js-editable in-edit-only" data-name="books.tag" data-pk="<%= id %>" data-type="text" placeholder="add"></a>
 
                               <% if (level) { %>
                                   <br> Level: <a href="#search/books/level:<%= level %>"><span class="badge badge-info"><%= level %></span></a>

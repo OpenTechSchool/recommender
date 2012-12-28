@@ -4,7 +4,13 @@
    Author's custom styles
    ========================================================================== */
 
+.in-edit-only {
+	display: none
+}
 
+body.edit-mode .in-edit-only {
+	display: inline;
+}
 
 
 

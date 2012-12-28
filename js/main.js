@@ -349,6 +349,17 @@ $(function() {
   });
 
    var ItemBaseView = TmplView.extend({
+    events:{
+      "click .remove-tag": "_remove_tag"
+    },
+    _remove_tag: function(ev) {
+      var tag = $(ev.currentTarget).data("tag"),
+          tags = this.model.get("tags");
+
+      tags.pop(tag);
+      this.render();
+      return false;
+    },
     extend_context: function() {
       var app = this.options.app;
       return {"recommendations": app.recommendations.where({
@@ -782,7 +793,13 @@ $(function() {
           collection  = this[collection_name],
           model = collection.get(content.pk);
       collection.dirty = true;
-      model.set(item_key, content.value);
+      if (item_key == "tag") {
+        var tags = model.get("tags");
+          tags.push(content.value);
+        model.set("tags", tags);
+      } else {
+        model.set(item_key, content.value);
+      }
       this.state.set("dirty", true);
     },
 
@@ -803,6 +820,14 @@ $(function() {
       mainNavView.render_login_bar();
 
       app.progress = 10;
+
+      app.state.on("change:edit_mode", function(model, val) {
+        if (val) {
+          $('body').addClass("edit-mode");
+        } else {
+          $('body').removeClass("edit-mode");
+        }
+      });
 
       app.on("pageLoaded", function(target) {
         mainNavView.select(target + "-menu");
