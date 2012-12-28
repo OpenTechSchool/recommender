@@ -346,7 +346,9 @@
                       </p>
                   <h4>Book Description</h4>
                   <p class="js-editable" data-name="books.desc" data-pk="<%= id %>" data-type="textarea" data-inputclass="span8"><%= desc %></p>
-                      <a href="">More on amazon.com</a>
+                  <% if (amazon_link) { %>
+                    <a href="<%= amazon_link %>">More on Amazon</a>
+                  <% } %>
                   </p>
               </div>
           </div>
