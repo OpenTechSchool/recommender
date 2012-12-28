@@ -322,6 +322,9 @@
           <div class="row">
               <div class="span3 offset1">
                  <img src="<%= picture_url %>">
+                 <% if (amazon_link) { %>
+                  <a href="<%= amazon_link %>" class="btn btn-small">Buy on Amazon</a>
+                <% } %>
               </div>
                   <div class="span8">
                       

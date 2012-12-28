@@ -1,6 +1,8 @@
 
 $(function() {
 
+  AMZ_TRACKING_CODE = "opentrecom-20";
+
   // Util
   var TmplView = Backbone.View.extend({
 
@@ -57,7 +59,14 @@ $(function() {
   var Book = RecommendableModel.extend({
     defaults: {
       tags: [],
+      amazon_link: null,
       desc: ""
+    },
+    initialize: function(input) {
+      if (input.amazon_id) {
+        this.set("amazon_link", "http://www.amazon.com/gp/product/" +
+          input.amazon_id + "?tag=" + AMZ_TRACKING_CODE);
+      }
     }
   });
   var Video = RecommendableModel.extend({
