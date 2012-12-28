@@ -182,8 +182,9 @@
                 <p>
                   Tags:
                   <% _.each(tags, function(tag) { %>
-                      <a href="#search/videos/tag:<%= tag %>"><span class="badge"><%= tag %></span></a>
+                      <a href="#search/videos/tag:<%= tag %>"><span class="badge"><%= tag %></span></a><a class="in-edit-only remove-tag" data-tag="<%=tag %>" href="#"><span class="icon icon-remove-sign"></span></a>
                   <% }); %>
+                    <a class="add-tag js-editable in-edit-only" data-name="videos.tag" data-pk="<%= id %>" data-type="text" placeholder="add"></a>
                 </p>
                 <h4>Short Description</h4>
                 <p class="js-editable" data-name="videos.desc" data-pk="<%= id %>" data-type="textarea" data-inputclass="span8"><%= desc %></p>

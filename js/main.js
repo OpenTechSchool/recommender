@@ -352,11 +352,18 @@ $(function() {
     events:{
       "click .remove-tag": "_remove_tag"
     },
+
+    initialize: function() {
+      this.options.app.state.on("change:edit_mode",
+        $.proxy(this.render, this));
+    },
     _remove_tag: function(ev) {
       var tag = $(ev.currentTarget).data("tag"),
-          tags = this.model.get("tags");
-
-      tags.pop(tag);
+          tags = this.model.get("tags"),
+          idx = tags.indexOf(tag);
+      if (idx !== -1) {
+        tags.splice(idx, 1);
+      }
       this.render();
       return false;
     },
@@ -824,6 +831,9 @@ $(function() {
       app.state.on("change:edit_mode", function(model, val) {
         if (val) {
           $('body').addClass("edit-mode");
+          $(app.el).find(".js-editable").editable({
+            url: $.proxy(this._submit_editable, this)
+          });
         } else {
           $('body').removeClass("edit-mode");
         }
