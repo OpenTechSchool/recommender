@@ -123,7 +123,7 @@ $(function() {
 
   var Videos = Backbone.Collection.extend({
     model: Video,
-    url: "data/Videos.json"
+    url: "data/videos.json"
   });
 
   var Recommendations = Backbone.Collection.extend({
