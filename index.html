@@ -22,9 +22,9 @@
         <script type="text/template" id="tmpl-main">
             <div class="hero-unit">
                 <h1>Welcome!</h1>
-                <p>To recommendly - the <a href="http://www.opentechschool.rg">OpenTechSchool</a> curated lists of learner materials.</p>
-                <p>This is stuff we think (as individuals) that can help you learn tech things and understand hacking-, sharing- and open source culture better.</p>
-                <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+                <p>To recommendly - the <a href="http://www.opentechschool.org">OpenTechSchool</a> curated lists of learner materials.</p>
+                <p>This is stuff we think can help you learn tech things and understand hacking-, sharing- and open source culture better.</p>
+                <p><a class="btn btn-primary btn-large">Dive in &raquo;</a></p>
             </div>
 
             <div class="row">
@@ -36,12 +36,12 @@
                 <div class="span4">
                     <h2>Videos</h2>
                     <p>Plenty of talks on tech topic help us learn every. And while there are a bunch which surface up through to us via social media and our channels not all are known to every. So we want to recommend some.</p>
-                    <p><a class="btn" href="#video/">Recommended Videos &raquo;</a></p>
+                    <p><a class="btn" href="#videos/">Recommended Videos &raquo;</a></p>
                 </div>
                 <div class="span4">
                     <h2>Online Courses</h2>
                     <p>More and more online courses poping up it becomes hard to choose. Those are the online courses that helped us and we`d recommend</p>
-                    <p><a class="btn" href="#courses/">Recommended Courses &raquo;</a></p>
+                    <p><a class="btn disabled" title="coming soon" href="#courses/">Recommended Courses &raquo;</a></p>
                </div>
             </div>
         </script>
@@ -195,7 +195,7 @@
           <br />
           <div class="row">
               <div class="offset1">
-                  <h3>Recommended by (<%= recommendations.length %>)<a class="add-recommendation in-edit-only" href="#add/recommendation"><span class="icon icon-plus-sign"></a></h3>
+                  <h3>Recommended by <%= recommendations.length %> Person<a class="add-recommendation in-edit-only" href="#add/recommendation"><span class="icon icon-plus-sign"></a></h3>
               </div>
           </div>
           <% _.each(recommendations, function(rcd) { %>
@@ -356,7 +356,7 @@
           <br />
           <div class="row">
               <div class="offset1">
-                  <h3>Recommended by (<%= recommendations.length %>) <a class="add-recommendation in-edit-only" href="#add/recommendation"><span class="icon icon-plus-sign"></a></h3>
+                  <h3>Recommended by <%= recommendations.length %> Person <a class="add-recommendation in-edit-only" href="#add/recommendation"><span class="icon icon-plus-sign"></a></h3>
               </div>
           </div>
           <% _.each(recommendations, function(rcd) { %>
@@ -556,12 +556,11 @@
         <div id="navbar" class="navbar">
           <div class="navbar-inner">
             <div class="container">
-              <a class="brand" href="#">recommendly</a>
+              <a class="brand" href="#/">recommendly</a>
               <ul class="nav" id="main-nav">
-                  <li id="home-menu" class="active"><a href="#/">Home</a></li>
                   <li id="books-menu"><a href="#books/">Books</a></li>
                   <li id="videos-menu"><a href="#videos/">Videos</a></li>
-                  <li id="courses-menu"><a href="#courses/">Courses</a></li>
+                  <li id="courses-menu"><a title="coming soon" href="#courses/">Courses</a></li>
               </ul>
               <div id="search-form" class="offset7">
                 <form class="navbar-search">
@@ -594,11 +593,20 @@
 
             <hr>
 
-            <footer>
-                <p>&copy; OpenTechSchool 2012</p>
-            </footer>
-
         </div> <!-- /container -->
+
+        <footer>
+            <div class="container">
+              <div class="row">
+                <div class="span5">
+                  <p>This service is brought to you by the <a target="_blank" href="http://www.opentechschool.org">OpenTechSchool</a>. As this service is a compilation of recommendations of third parties and individuals and as such is not curated by the OpenTechSchool itself, the OpenTechSchool can not take any responsibility or liability for the accuracy or quality of those recommendations.
+                </div>
+                <div class="span5">
+                  Except <a href="http://www.opentechschool.org/imprint.html">where otherwise noted</a>, content on this site is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+                </div>
+              </div>
+            </div>
+        </footer>
         <script src="js/vendor/jquery-1.8.3.min.js"></script>
 
         <script src="js/vendor/bootstrap.min.js"></script>
@@ -611,7 +619,7 @@
         <script src="js/main.js"></script>
 
         <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            var _gaq=[['_setAccount','UA-33344154-1'],['_trackPageview']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));

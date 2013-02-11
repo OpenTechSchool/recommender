@@ -12,6 +12,14 @@ body.edit-mode .in-edit-only {
 	display: inline;
 }
 
+footer {
+	font-size: .6571em;
+	background: #085987;
+	color: #84acc3;
+	padding: 3em 0;
+	height: auto;
+}
+
 
 
 
