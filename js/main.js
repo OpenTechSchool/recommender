@@ -885,6 +885,7 @@ $(function() {
     add_item: function(model_type) {
       var view = new {
         "book": AddBookView,
+        "profile": AddProfileView,
         "recommendation": AddRecommendationView
       }[model_type]({app: this});
 

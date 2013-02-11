@@ -421,32 +421,76 @@
 
 
         <script type="text/template" id="tmpl-add-recommendation">
-            <form class="form-horizontal">
+          <form class="form-horizontal">
+            <div class="modal-body">
+              By <select id="user" name="by" rel="tooltip" title="Select the User">
+
+                  <% app.profiles.models.forEach(function (profile) { %>
+                    <option value="<%= profile.get('id') %>"><%= profile.get("name") %></option>
+                  <% }); %>
+                  </select>
+                  on 
+                  <select id="book" name="item_id" rel="tooltip" title="Select the User">
+
+                  <% app.books.models.forEach(function (book) { %>
+                    <option value="<%= book.get('id') %>"><%= book.get("title") %></option>
+                  <% }); %>
+                  </select>
+                  <br />
+                  <br />
+                  <textarea class="span6" rows="6" name="says"></textarea>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" type="submit">Add</button>
+            </div>
+          </form>
+        </script>
+
+        <script type="text/template" id="tmpl-add-profile">
+          <form class="form-horizontal">
               <div class="modal-body">
-                By <select id="user" name="by" rel="tooltip" title="Select the User">
-
-                    <% app.profiles.models.forEach(function (profile) { %>
-                      <option value="<%= profile.get('id') %>"><%= profile.get("name") %></option>
-                    <% }); %>
-                    </select>
-                    on 
-                    <select id="book" name="item_id" rel="tooltip" title="Select the User">
-
-                    <% app.books.models.forEach(function (book) { %>
-                      <option value="<%= book.get('id') %>"><%= book.get("title") %></option>
-                    <% }); %>
-                    </select>
-                    <br />
-                    <br />
-                    <textarea name="says"></textarea>
+                <div class="control-group">
+                  <label class="control-label" for="name">Full Name</label>
+                  <div class="controls">
+                    <input type="text" class="input" required="required" id="name" name="name" rel="tooltip" title="Please enter the Persons name here" placeholder="Jon Smith">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="nick">Nickname</label>
+                  <div class="controls">
+                    <input type="text" pattern="\w{3,8}" class="input" required="required" id="nick" name="nick" rel="tooltip" title="Please enter a short nickname here" placeholder="Jonny">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="slug">Profile ID</label>
+                  <div class="controls">
+                    <input type="text" pattern="[a-z0-9-]{3,16}" class="input" required="required" id="slug" name="id" rel="tooltip" title="URL-nick here" placeholder="urlfriendly-nick">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="picture_url">Profile URL</label>
+                  <div class="controls">
+                    <input type="url" pattern="https?://.+" class="input" required="required" id="picture_url" name="picture_url" rel="tooltip" title="URL to the cover" placeholder="http://example.com/cover.jpg">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="tagline">Tagline</label>
+                  <div class="controls">
+                    <input type="text" class="input" required="required" id="tagline" name="tagline" rel="tooltip" title="One line to give you credit" placeholder="Software Developer and Evangelist for Soundcloud">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="about">More about you</label>
+                  <div class="controls">
+                    <textarea class="span4" rows="3" name="about"></textarea>
+                  </div>
+                </div>
+                
               </div>
               <div class="modal-footer">
                 <button class="btn btn-primary" type="submit">Add</button>
               </div>
           </form>
-        </script>
-
-        <script type="text/template" id="tmpl-add-profile">
         </script>
 
         <script type="text/template" id="tmpl-add-book">
